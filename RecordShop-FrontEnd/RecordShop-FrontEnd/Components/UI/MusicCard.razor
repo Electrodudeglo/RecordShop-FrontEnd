@@ -1,0 +1,41 @@
+﻿
+
+
+<div class="container">
+	<div class="box grid mt-5 mb-5">
+
+		<img src="images/spooflogo.png" alt="Alternate Text" height="50" width="50" />
+		<div>
+			<p class="mb-3">Title</p>
+			<h1>@records.RecordTitle</h1>
+		</div>
+		<div>
+			<p class="mb-3">Artist</p>
+			<h1>@records.Artists</h1>
+		</div>
+		<div>
+			<p class="mb-3">Genre</p>
+			<h1>@records.Genre</h1>
+		</div>
+		<div>
+			<p class="mb-3">Release Year</p>
+			<h1>@records.ReleaseYear</h1>
+		</div>
+		<div>
+			<p class="mb-3">Stock</p>
+			<h1>@records.Stock</h1>
+		</div>
+	</div>
+</div>
+
+
+
+
+@code {
+
+@using RecordShop_FrontEnd.Models
+
+	[Parameter]
+	public MusicRecordModel records { get; set; } = new();
+
+}
