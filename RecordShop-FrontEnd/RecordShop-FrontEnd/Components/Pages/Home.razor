@@ -1,124 +1,19 @@
 ﻿@page "/"
 @using RecordShop_FrontEnd.Components.UI
+@using RecordShop_FrontEnd
 
 
-
-@* @foreach(MusicRecordModel album in albums)
-{
-    
-    <MusicCard records="album"/>
-
-} *@
-
-<div class="container is-max-tablet">
-
-    <div class="fix-grid has-auto-count">
-    
+@* <div class="container is-max-tablet">
+    <div class="fix-grid has-auto-count">   
     <div class="grid">
-
-        @foreach(MusicRecordModel album in albums)
-{
-    
-    <MusicSummaryCard records="album"/>
-
-}
-
+        <RecordsLoader/>
     </div>
-
-</div>
-
-</div>
-
-
+    </div>
+</div> *@
 
 
 
 
 @code {
-
-@using RecordShop_FrontEnd.Models
-
-	List<MusicRecordModel> albums = new(){
-	
-        new MusicRecordModel {
-            Id = 1,
-            RecordTitle = "Toxicity",
-            Artists = "System Of A Down",
-            ReleaseYear = "2001",
-            Genre = "Alternative Metal",
-            Stock = 12
-        },
-        new MusicRecordModel {
-            Id = 2,
-            RecordTitle = "Mezmerize",
-            Artists = "System Of A Down",
-            ReleaseYear = "2005",
-            Genre = "Alternative Metal",
-            Stock = 8
-        },
-        new MusicRecordModel {
-            Id = 3,
-            RecordTitle = "Hypnotize",
-            Artists = "System Of A Down",
-            ReleaseYear = "2005",
-            Genre = "Alternative Metal",
-            Stock = 10
-        },
-        new MusicRecordModel {
-            Id = 4,
-            RecordTitle = "System of a Down",
-            Artists = "System Of A Down",
-            ReleaseYear = "1998",
-            Genre = "Alternative Metal",
-            Stock = 6
-        },
-        new MusicRecordModel {
-            Id = 5,
-            RecordTitle = "Antichrist Superstar",
-            Artists = "Marilyn Manson",
-            ReleaseYear = "1996",
-            Genre = "Industrial Metal",
-            Stock = 9
-        },
-        new MusicRecordModel {
-            Id = 6,
-            RecordTitle = "Mechanical Animals",
-            Artists = "Marilyn Manson",
-            ReleaseYear = "1998",
-            Genre = "Industrial Rock",
-            Stock = 7
-        },
-        new MusicRecordModel {
-            Id = 7,
-            RecordTitle = "Holy Wood (In the Shadow of the Valley of Death)",
-            Artists = "Marilyn Manson",
-            ReleaseYear = "2000",
-            Genre = "Industrial Metal",
-            Stock = 5
-        },
-        new MusicRecordModel {
-            Id = 8,
-            RecordTitle = "Songs for the Deaf",
-            Artists = "Queens of the Stone Age",
-            ReleaseYear = "2002",
-            Genre = "Stoner Rock",
-            Stock = 11
-        },
-        new MusicRecordModel {
-            Id = 9,
-            RecordTitle = "Rated R",
-            Artists = "Queens of the Stone Age",
-            ReleaseYear = "2000",
-            Genre = "Alternative Rock",
-            Stock = 6
-        },
-        new MusicRecordModel {
-            Id = 10,
-            RecordTitle = "Lullabies to Paralyze",
-            Artists = "Queens of the Stone Age",
-            ReleaseYear = "2005",
-            Genre = "Hard Rock",
-            Stock = 8
-        }};
 
 }

@@ -1,0 +1,43 @@
+﻿@using RecordShop_FrontEnd.Components.UI
+
+
+	
+@foreach(var record in _recordsLoader)
+{
+	
+	<MusicSummaryCard records="record"/>
+
+}
+
+
+
+@code {
+
+@using RecordShop_FrontEnd.Models
+
+	private List<MusicRecordModel> _recordsLoader { get; set; } = new();
+	private string loadingIndicator = "";
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+		var http = new HttpClient();
+
+		var response = await http.GetFromJsonAsync<List<MusicRecordModel>>($"http://localhost:5125/api/v1/records");
+
+		if (response != null)
+		{
+			_recordsLoader = response;
+		}
+
+		}
+		catch
+		{
+			
+
+		}
+
+	}
+
+}

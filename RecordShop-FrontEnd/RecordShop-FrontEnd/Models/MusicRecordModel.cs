@@ -12,6 +12,8 @@ namespace RecordShop_FrontEnd.Models
         public string ReleaseYear { get; set; }
         public string Genre { get; set; }
         public int Stock { get; set; }
+        public string Cover { get; set; }
+
     }
 
 
