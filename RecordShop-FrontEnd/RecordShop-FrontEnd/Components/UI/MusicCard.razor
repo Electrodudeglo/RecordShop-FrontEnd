@@ -1,29 +1,31 @@
 ﻿
 
 
-<div class="container">
-	<div class="box grid mt-5 mb-5">
+<div class="container p-1">
+	<div class="box has-background-black-ter grid is-gap-0 mt-5 mb-5">
 
-		<img src="images/spooflogo.png" alt="Alternate Text" height="50" width="50" />
-		<div>
-			<p class="mb-3">Title</p>
-			<h1>@records.RecordTitle</h1>
+		<div class="">
+			<img src="images/spooflogo.png" alt="Alternate Text" height="50" width="50" />
 		</div>
 		<div>
-			<p class="mb-3">Artist</p>
-			<h1>@records.Artists</h1>
+			<p class="mb-3 is-size-6">Title</p>
+			<p class="truncate is-size-6">@records.RecordTitle</p>
+		</div>
+		<div class="">
+			<p class="mb-3 is-size-6">Artist</p>
+			<p class="is-size-6 truncate-artist">@records.Artists</p>
 		</div>
 		<div>
-			<p class="mb-3">Genre</p>
-			<h1>@records.Genre</h1>
+			<p class="mb-3 is-size-6">Genre</p>
+			<p class="is-size-6">@records.Genre</p>
 		</div>
 		<div>
-			<p class="mb-3">Release Year</p>
-			<h1>@records.ReleaseYear</h1>
+			<p class="mb-3 is-size-6">Release Year</p>
+			<p class="is-size-6">@records.ReleaseYear</p>
 		</div>
 		<div>
-			<p class="mb-3">Stock</p>
-			<h1>@records.Stock</h1>
+			<p class="mb-3 is-size-6">Stock</p>
+			<p class="is-size-6">@records.Stock</p>
 		</div>
 	</div>
 </div>
