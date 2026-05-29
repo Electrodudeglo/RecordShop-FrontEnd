@@ -1,9 +1,67 @@
-﻿<h3>MusicDetails</h3>
+﻿
+<div class="box">
 
+	<div class="has-text-centered">
+		<div class="mb-4">
+			<img src="@_musicRecordLoader.Cover" alt="Alternate Text" height="200" width="200" />
+		</div>
+
+		<div class="mb-4">
+			<InputText class="input has-text-centered" @bind-Value="_musicRecordLoader.RecordTitle" />
+		</div>
+
+		<div class="mb-4">
+			<InputText class="input has-text-centered" @bind-Value="_musicRecordLoader.Artists" />
+		</div>
+
+		<div class="mb-4">
+			<InputText class="input has-text-centered" @bind-Value="_musicRecordLoader.Genre" />
+		</div>
+
+
+		<div class="mb-4">
+			<InputText class="input has-text-centered" @bind-Value="_musicRecordLoader.ReleaseYear" />
+		</div>
+
+		<div class="mb-4">
+			<InputNumber class="input has-text-centered" @bind-Value="_musicRecordLoader.Stock" />
+		</div>
+
+		<div>
+			<button class="button">Update</button>
+		</div>
+	</div>
+	
+</div>
 
 
 
 
 @code {
+
+@using RecordShop_FrontEnd.Models
+
+	private MusicRecordModel _musicRecordLoader { get; set; } = new();
+
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			var http = new HttpClient();
+			var response = await http.GetFromJsonAsync<MusicRecordModel>($"http://localhost:5125/api/v1/records/1");
+
+			_musicRecordLoader = response;
+		}
+
+		catch
+		{
+			
+
+		}
+
+
+	}
+
 
 }
