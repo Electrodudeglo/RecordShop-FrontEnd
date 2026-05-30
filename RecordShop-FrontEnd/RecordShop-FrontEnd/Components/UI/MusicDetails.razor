@@ -3,28 +3,37 @@
 
 	<div class="has-text-centered">
 		<div class="mb-4">
-			<img src="@_musicRecordLoader.Cover" alt="Alternate Text" height="200" width="200" />
+			<img src="images/spooflogo.png" alt="Alternate Text" height="200" width="200" />
 		</div>
-
-		<div class="mb-4">
-			<InputText class="input has-text-centered" @bind-Value="_musicRecordLoader.RecordTitle" />
+		<div>
+			<p>Title?</p>
 		</div>
-
 		<div class="mb-4">
-			<InputText class="input has-text-centered" @bind-Value="_musicRecordLoader.Artists" />
+			<InputText class="input has-text-centered" />
 		</div>
-
-		<div class="mb-4">
-			<InputText class="input has-text-centered" @bind-Value="_musicRecordLoader.Genre" />
+		<div>
+			<p>artist?</p>
 		</div>
-
-
 		<div class="mb-4">
-			<InputText class="input has-text-centered" @bind-Value="_musicRecordLoader.ReleaseYear" />
+			<InputText class="input has-text-centered" />
 		</div>
-
+		<div>
+			<p>genre?</p>
+		</div>
 		<div class="mb-4">
-			<InputNumber class="input has-text-centered" @bind-Value="_musicRecordLoader.Stock" />
+			<InputText class="input has-text-centered" />
+		</div>
+		<div>
+			<p>year?</p>
+		</div>
+		<div class="mb-4">
+			<InputText class="input has-text-centered" />
+		</div>
+		<div>
+			<p>stock?</p>
+		</div>
+		<div class="mb-4">
+			<input/>
 		</div>
 
 		<div>
@@ -41,27 +50,7 @@
 
 @using RecordShop_FrontEnd.Models
 
-	private MusicRecordModel _musicRecordLoader { get; set; } = new();
-
-
-	protected override async Task OnInitializedAsync()
-	{
-		try
-		{
-			var http = new HttpClient();
-			var response = await http.GetFromJsonAsync<MusicRecordModel>($"http://localhost:5125/api/v1/records/1");
-
-			_musicRecordLoader = response;
-		}
-
-		catch
-		{
-			
-
-		}
-
-
-	}
-
+	[Parameter]
+	public MusicRecordModel musicRecord { get; set; }
 
 }
