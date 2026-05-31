@@ -14,12 +14,10 @@
 <div class="fixed-grid has-3-cols">
 	<div class="grid">
         <div class="cell is-col-start-2">
-            <MusicDetails musicRecord="models"/>
+            <MusicDetails musicRecord="models" OnSave="HandleSave"/>
         </div>
     </div>
 </div>
-
-
 
 
 @code {
@@ -38,4 +36,9 @@
             Cover = "https://cdn-images.dzcdn.net/images/cover/35b093d22fe1539003d5d18dd8f309eb/500x500-000000-80-0-0.jpg"
         };
 
+
+    private void HandleSave(MusicRecordModel updateRecord)
+    {
+        models = updateRecord;        
+    }
 }

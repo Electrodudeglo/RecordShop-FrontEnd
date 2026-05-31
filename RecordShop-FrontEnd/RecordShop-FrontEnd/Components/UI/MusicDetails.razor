@@ -32,11 +32,11 @@
 			<p>stock?</p>
 		</div>
 		<div class="mb-4">
-			<input/>
+			<InputNumber class="input has-text-centered" @bind-Value="musicRecord.Stock"/>
 		</div>
 
 		<div>
-			<button class="button">Update</button>
+			<button class="button" @onclick="SaveRecord">Update</button>
 		</div>
 	</div>
 	
@@ -50,5 +50,15 @@
 	[Parameter]
 	public MusicRecordModel musicRecord { get; set; } = new();
 
+	[Parameter]
+	public EventCallback<MusicRecordModel> OnSave { get; set; }
+
+	public async Task SaveRecord()
+	{
+		await OnSave.InvokeAsync(musicRecord);
+	}
+
+
 
 }
+
