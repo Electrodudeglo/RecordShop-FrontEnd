@@ -1,15 +1,17 @@
 ﻿
-<div class="box p-2 mb-4">
-	<div>
-		<img src="@records.Cover" alt="Alternate Text" height="50" width="50" />
+<a href="#">
+	<div class="box p-2 mb-4">
+		<div>
+			<img src="@records.Cover" alt="Alternate Text" height="50" width="50" />
+		</div>
+		<div>
+			<p class="is-size-7 truncate">@records.RecordTitle</p>
+		</div>
+		<div>
+			<p class="is-size-7">@records.Artists</p>
+		</div>
 	</div>
-	<div>
-		<p class="is-size-7 truncate">@records.RecordTitle</p>
-	</div>
-	<div>
-		<p class="is-size-7">@records.Artists</p>
-	</div>
-</div>
+</a>
 
 
 @code {
@@ -18,4 +20,5 @@
 
 	[Parameter]
 	public MusicRecordModel records { get; set; } = new();
+
 }

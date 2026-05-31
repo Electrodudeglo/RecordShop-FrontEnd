@@ -14,7 +14,7 @@
 <div class="fixed-grid has-3-cols">
 	<div class="grid">
         <div class="cell is-col-start-2">
-            <MusicDetails />
+            <MusicDetails musicRecord="models"/>
         </div>
     </div>
 </div>
@@ -23,5 +23,19 @@
 
 
 @code {
+
+@using RecordShop_FrontEnd.Models
+
+    public MusicRecordModel models = new()
+
+        {
+            Id = 10,
+            RecordTitle = "Vol. 3: The Subliminal Verses (Special Edition)",
+            Artists = "Slipknot",
+            ReleaseYear = "2004",
+            Genre = "Metal",
+            Stock = 122723,
+            Cover = "https://cdn-images.dzcdn.net/images/cover/35b093d22fe1539003d5d18dd8f309eb/500x500-000000-80-0-0.jpg"
+        };
 
 }

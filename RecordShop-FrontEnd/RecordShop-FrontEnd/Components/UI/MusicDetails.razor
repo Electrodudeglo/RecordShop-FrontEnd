@@ -1,35 +1,34 @@
-﻿
-<div class="box">
+﻿<div class="box">
 
 	<div class="has-text-centered">
 		<div class="mb-4">
-			<img src="images/spooflogo.png" alt="Alternate Text" height="200" width="200" />
+			<img src=@musicRecord.Cover alt="Alternate Text" height="200" width="200" />
 		</div>
-		<div>
-			<p>Title?</p>
-		</div>
-		<div class="mb-4">
-			<InputText class="input has-text-centered" />
-		</div>
-		<div>
-			<p>artist?</p>
+		<div class="mb-3">
+			<p>Update Album Title</p>
 		</div>
 		<div class="mb-4">
-			<InputText class="input has-text-centered" />
+			<InputText class="input has-text-centered" @bind-Value="musicRecord.RecordTitle" />
 		</div>
-		<div>
-			<p>genre?</p>
-		</div>
-		<div class="mb-4">
-			<InputText class="input has-text-centered" />
-		</div>
-		<div>
-			<p>year?</p>
+		<div class="mb-3">
+			<p>Update Artist Name</p>
 		</div>
 		<div class="mb-4">
-			<InputText class="input has-text-centered" />
+			<InputText class="input has-text-centered" @bind-Value="musicRecord.Artists"/>
 		</div>
-		<div>
+		<div class="mb-3">
+			<p>Update Genre</p>
+		</div>
+		<div class="mb-4">
+			<InputText class="input has-text-centered" @bind-Value="musicRecord.Genre" />
+		</div>
+		<div class="mb-3">
+			<p>Update Year Released</p>
+		</div>
+		<div class="mb-4">
+			<InputText class="input has-text-centered" @bind-Value="musicRecord.ReleaseYear" />
+		</div>
+		<div class="mb-3">
 			<p>stock?</p>
 		</div>
 		<div class="mb-4">
@@ -44,13 +43,12 @@
 </div>
 
 
-
-
 @code {
 
 @using RecordShop_FrontEnd.Models
 
 	[Parameter]
-	public MusicRecordModel musicRecord { get; set; }
+	public MusicRecordModel musicRecord { get; set; } = new();
+
 
 }
