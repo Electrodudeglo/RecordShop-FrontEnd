@@ -48,14 +48,16 @@
 @using RecordShop_FrontEnd.Models
 
 	[Parameter]
-	public MusicRecordModel musicRecord { get; set; } = new();
+	public MusicRecordModel musicRecord { get; set; }
 
 	[Parameter]
 	public EventCallback<MusicRecordModel> OnSave { get; set; }
 
-	public async Task SaveRecord()
+	private async Task SaveRecord()
 	{
+		Console.WriteLine("Save clicked!");
 		await OnSave.InvokeAsync(musicRecord);
+
 	}
 
 
