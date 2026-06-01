@@ -3,6 +3,9 @@
 @using RecordShop_FrontEnd
 
 
+
+
+
 @* <div class="container is-max-tablet">
     <div class="fix-grid has-auto-count">   
     <div class="grid">
@@ -38,10 +41,10 @@
 
 @using RecordShop_FrontEnd.Models
 
-    public MusicRecordModel models = new()
+	public MusicRecordModel models = new()
 
-{
-    Id = 10,
+    {
+        Id = 10,
         RecordTitle = "Vol. 3: The Subliminal Verses (Special Edition)",
         Artists = "Slipknot",
         ReleaseYear = "2004",
@@ -50,13 +53,12 @@
         Cover = "https://cdn-images.dzcdn.net/images/cover/35b093d22fe1539003d5d18dd8f309eb/500x500-000000-80-0-0.jpg"
     };
 
-    
 
 
-    private void HandleSave(MusicRecordModel updateRecord)
-    {
-        models = updateRecord;
+
+	private void HandleSave(MusicRecordModel updateRecord)
+	{	
+		models = updateRecord;
         StateHasChanged();
-
     }
 }

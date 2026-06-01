@@ -38,6 +38,11 @@
 		<div>
 			<button class="button" @onclick="SaveRecord">Update</button>
 		</div>
+
+		<div>
+			<button @onclick="TestSave">test</button>
+			<p>@count</p>
+		</div>
 	</div>
 	
 </div>
@@ -46,21 +51,26 @@
 @code {
 
 @using RecordShop_FrontEnd.Models
+@rendermode InteractiveServer
 
 	[Parameter]
-	public MusicRecordModel musicRecord { get; set; }
+	public MusicRecordModel musicRecord { get; set; } = new();
 
 	[Parameter]
 	public EventCallback<MusicRecordModel> OnSave { get; set; }
 
+	private int count = 0;
+
 	private async Task SaveRecord()
 	{
-		Console.WriteLine("Save clicked!");
+		Console.WriteLine("heeloo");	
 		await OnSave.InvokeAsync(musicRecord);
-
 	}
 
-
+	private void TestSave()
+	{
+		count++;
+	}
 
 }
 
