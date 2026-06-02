@@ -2,48 +2,15 @@
 @using RecordShop_FrontEnd.Components.UI
 @using RecordShop_FrontEnd
 
-@* <div class="container is-max-tablet">
+<div class="container is-max-tablet">
     <div class="fix-grid has-auto-count">   
     <div class="grid">
         <RecordsLoader/>
     </div>
-    </div>
-</div> *@
-
-
-
-<div class="fixed-grid has-3-cols">
-	<div class="grid">
-        <div class="cell is-col-start-2">
-            <MusicDetails musicRecord="models" OnSave="HandleSave"/>
-        </div>
     </div>
 </div>
 
 
 @code {
 
-@using RecordShop_FrontEnd.Models
-
-
-	public MusicRecordModel models = new()
-
-    {
-        Id = 10,
-        RecordTitle = "Vol. 3: The Subliminal Verses (Special Edition)",
-        Artists = "Slipknot",
-        ReleaseYear = "2004",
-        Genre = "Metal",
-        Stock = 122723,
-        Cover = "https://cdn-images.dzcdn.net/images/cover/35b093d22fe1539003d5d18dd8f309eb/500x500-000000-80-0-0.jpg"
-    };
-
-	private void HandleSave(MusicRecordModel updateRecord)
-	{
-
-		Console.WriteLine(updateRecord.Artists);
-
-		models = updateRecord;
-        StateHasChanged();
-    }
 }

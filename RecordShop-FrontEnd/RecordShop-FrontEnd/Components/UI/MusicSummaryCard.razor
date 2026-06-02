@@ -1,5 +1,5 @@
 ﻿
-<a href="#">
+<NavLink href="@($"/records/{records.Id}")">
 	<div class="box p-2 mb-4">
 		<div>
 			<img src="@records.Cover" alt="Alternate Text" height="50" width="50" />
@@ -11,7 +11,7 @@
 			<p class="is-size-7">@records.Artists</p>
 		</div>
 	</div>
-</a>
+</NavLink>
 
 
 @code {
