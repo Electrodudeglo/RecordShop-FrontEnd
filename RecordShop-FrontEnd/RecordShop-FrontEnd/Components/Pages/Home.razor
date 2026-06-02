@@ -25,6 +25,7 @@
 
 @using RecordShop_FrontEnd.Models
 
+
 	public MusicRecordModel models = new()
 
     {
@@ -37,11 +38,11 @@
         Cover = "https://cdn-images.dzcdn.net/images/cover/35b093d22fe1539003d5d18dd8f309eb/500x500-000000-80-0-0.jpg"
     };
 
-
-
-
 	private void HandleSave(MusicRecordModel updateRecord)
-	{	
+	{
+
+		Console.WriteLine(updateRecord.Artists);
+
 		models = updateRecord;
         StateHasChanged();
     }

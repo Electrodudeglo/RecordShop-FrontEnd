@@ -12,6 +12,7 @@
 @using RecordShop_FrontEnd.Models
 
 	private List<MusicRecordModel> _recordsLoader { get; set; } = new();
+	
 	private string loadingIndicator = "";
 
 	protected override async Task OnInitializedAsync()
@@ -31,7 +32,7 @@
 		catch
 		{
 			
-
+				
 		}
 	}
 }
