@@ -39,10 +39,10 @@
 			<button class="button" @onclick="SaveRecord">Update</button>
 		</div>
 
-		<div>
+		@* <div>
 			<button @onclick="TestSave">test</button>
 			<p>@count</p>
-		</div>
+		</div> *@
 	</div>
 	<div class="mt-6 box">
 		<h2 class="title is-5">Current Record State</h2>
@@ -60,7 +60,7 @@
 
 @code {
 @using RecordShop_FrontEnd.Models
-@rendermode InteractiveServer
+
 
 	[Parameter]
 	public MusicRecordModel musicRecord { get; set; } = new();
