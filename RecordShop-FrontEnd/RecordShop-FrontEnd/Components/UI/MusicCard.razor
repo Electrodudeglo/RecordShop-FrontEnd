@@ -1,37 +1,44 @@
 ﻿
+<div class="box p-6">
+    <div class="has-text-centered">
 
+        <div class="mb-5">
+            <img src="@records.Cover"
+                 alt="Music Album Cover Picture"
+                 class="album-cover"
+                 style="border-radius: 10px; box-shadow: 0 6px 18px rgba(0,0,0,0.15); max-width: 350px;" />
+        </div>
 
-<div class="container p-1">
-	<div class="box has-background-black-ter grid is-gap-0 mt-5 mb-5">
+        <div class="mb-4">
+            <p class="is-size-3 has-text-weight-semibold" style="letter-spacing: -0.5px;">
+                @records.RecordTitle
+            </p>
 
-		<div class="">
-			<img src="images/spooflogo.png" alt="Alternate Text" height="50" width="50" />
-		</div>
-		<div>
-			<p class="mb-3 is-size-6">Title</p>
-			<p class="truncate is-size-6">@records.RecordTitle</p>
-		</div>
-		<div class="">
-			<p class="mb-3 is-size-6">Artist</p>
-			<p class="is-size-6 truncate-artist">@records.Artists</p>
-		</div>
-		<div>
-			<p class="mb-3 is-size-6">Genre</p>
-			<p class="is-size-6">@records.Genre</p>
-		</div>
-		<div>
-			<p class="mb-3 is-size-6">Release Year</p>
-			<p class="is-size-6">@records.ReleaseYear</p>
-		</div>
-		<div>
-			<p class="mb-3 is-size-6">Stock</p>
-			<p class="is-size-6">@records.Stock</p>
-		</div>
-	</div>
+            <p class="is-size-5">@records.Artists</p>
+
+            <p class="tag is-info is-light mt-3" style="font-size: 1rem;">
+                Released: @records.ReleaseYear
+            </p>
+
+            <p class="tag is-success is-light mt-2" style="font-size: 1rem;">
+                Stock: @records.Stock
+            </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="buttons is-centered mt-5">
+            <NavLink class="button is-dark" href="@($"/records/edit/{records.Id}")">
+                Edit
+            </NavLink>
+
+            <button class="button is-danger"
+                    @onclick="() => OnDelete(records.Id)">
+                Delete
+            </button>
+        </div>
+
+    </div>
 </div>
-
-
-
 
 @code {
 
@@ -39,5 +46,21 @@
 
 	[Parameter]
 	public MusicRecordModel records { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<int> EditRequested { get; set; }
+
+    [Parameter]
+    public EventCallback<int> DeleteRequested { get; set; }
+
+    private async Task OnEdit(int id)
+    {
+        await EditRequested.InvokeAsync(id);
+    }
+
+    private async Task OnDelete(int id)
+    {
+        await DeleteRequested.InvokeAsync(id);
+    }
 
 }
