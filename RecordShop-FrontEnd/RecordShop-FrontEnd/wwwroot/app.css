@@ -28,7 +28,9 @@ h1:focus {
     border-color: #929292;
 }
 
-
+/*
+    custom css below
+*/
 .truncate {
     white-space: nowrap;
     overflow: hidden;
@@ -42,3 +44,11 @@ h1:focus {
     text-overflow: ellipsis;
     max-width: 100px;
 }
+
+html, body {
+    height: 100%;
+}
+
+
+
+
