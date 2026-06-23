@@ -13,7 +13,15 @@
 
             else
             {                
-                <EditMusicDetails musicRecord="Model" OnSave="HandleSave" />
+				if(Success)
+				{	
+					<p>Data updated</p>
+				}
+				
+				else
+				{	
+					<EditMusicDetails musicRecord="Model" OnSave="HandleSave" />
+				}
             }
 
         </div>
@@ -24,35 +32,55 @@
 @code {
 @using RecordShop_FrontEnd.Models
 
-    [Parameter]
-    public MusicRecordModel Model { get; set; } = new();
+	[Parameter]
+	public MusicRecordModel Model { get; set; } = new();
 
-    [Parameter]
-    public int Id { get; set; }
+	[Parameter]
+	public int Id { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            var http = new HttpClient();
-            var response = await http.GetFromJsonAsync<MusicRecordModel>($"http://localhost:5125/api/v1/records/{Id}");
+	public bool Success { get; set; } = false;
 
-            Model = response;
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			var http = new HttpClient();
+			var response = await http.GetFromJsonAsync<MusicRecordModel>($"http://localhost:5125/api/v1/records/{Id}");
+
+			Model = response;
 
 		}
 		catch (Exception e)
 		{
 			Console.WriteLine(e.Message);
+		}
+	}
+
+
+
+	private async Task HandleSave(MusicRecordModel updateRecord)
+	{
+		try
+		{
+			var http = new HttpClient();
+
+			var response = await http.PutAsJsonAsync<MusicRecordModel>($"http://localhost:5125/api/v1/records/{Id}", updateRecord);
+
+			if(response.IsSuccessStatusCode)
+			{
+				Success = true;
+
+				Console.WriteLine(Model.Artists);
+
+            }
         }
-    }
 
+        catch
+        {
+            
 
+        }
 
-private void HandleSave(MusicRecordModel updateRecord)
-{
-    Console.WriteLine(updateRecord.Artists);
-    Model = updateRecord;
-    StateHasChanged();
 }
 
 }

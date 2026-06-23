@@ -38,27 +38,12 @@
 		<div>
 			<button class="button" @onclick="SaveRecord">Update</button>
 		</div>
-
-		@* <div>
-			<button @onclick="TestSave">test</button>
-			<p>@count</p>
-		</div> *@
-	</div>
-	<div class="mt-6 box">
-		<h2 class="title is-5">Current Record State</h2>
-
-		<p><strong>Title:</strong> @musicRecord.RecordTitle</p>
-		<p><strong>Artist:</strong> @musicRecord.Artists</p>
-		<p><strong>Genre:</strong> @musicRecord.Genre</p>
-		<p><strong>Year:</strong> @musicRecord.ReleaseYear</p>
-		<p><strong>Stock:</strong> @musicRecord.Stock</p>
-
-		<img src="@musicRecord.Cover" width="150" class="mt-3" />
 	</div>
 </div>
 
 
 @code {
+
 @using RecordShop_FrontEnd.Models
 
 
@@ -68,17 +53,10 @@
 	[Parameter]
 	public EventCallback<MusicRecordModel> OnSave { get; set; }
 
-	private int count = 0;
-
 	private async Task SaveRecord()
 	{
 		Console.WriteLine("heeloo");	
 		await OnSave.InvokeAsync(musicRecord);
-	}
-
-	private void TestSave()
-	{
-		count++;
 	}
 
 }
