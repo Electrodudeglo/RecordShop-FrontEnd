@@ -8,9 +8,6 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-var app = builder.Build();
-
-
 // Authentication products
 builder.Services.AddScoped<AuthService>();
 
@@ -18,6 +15,8 @@ builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri("http://localhost:5125/api/")
 });
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
