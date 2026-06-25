@@ -13,7 +13,8 @@ builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddScoped(sp => new HttpClient
 {
-    BaseAddress = new Uri("http://localhost:5125/api/")
+    BaseAddress = new Uri("http://localhost:5125/")
+
 });
 
 var app = builder.Build();
