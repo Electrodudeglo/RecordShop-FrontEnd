@@ -1,4 +1,5 @@
 using RecordShop_FrontEnd.Components;
+using RecordShop_FrontEnd.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,15 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
 var app = builder.Build();
+
+
+// Authentication products
+builder.Services.AddScoped<AuthService>();
+
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri("http://localhost:5125/api/")
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
