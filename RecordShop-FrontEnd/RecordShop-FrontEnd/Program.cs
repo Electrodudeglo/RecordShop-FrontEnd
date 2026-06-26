@@ -10,6 +10,7 @@ builder.Services.AddRazorComponents()
 
 // Authentication products
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<RecordService>();
 
 builder.Services.AddScoped(sp => new HttpClient
 {
