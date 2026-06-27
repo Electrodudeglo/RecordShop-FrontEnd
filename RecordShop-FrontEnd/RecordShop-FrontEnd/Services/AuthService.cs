@@ -9,11 +9,11 @@ namespace RecordShop_FrontEnd.Services
     {
         private readonly HttpClient _http;
         private readonly IJSRuntime _js;
-        private readonly ToastService _toast;
+        private readonly IToastService _toast;
 
         private const string TokenKey = "authToken";
 
-        public AuthService(HttpClient http, IJSRuntime js, ToastService toast)
+        public AuthService(HttpClient http, IJSRuntime js, IToastService toast)
         {
             _http = http;
             _js = js;
