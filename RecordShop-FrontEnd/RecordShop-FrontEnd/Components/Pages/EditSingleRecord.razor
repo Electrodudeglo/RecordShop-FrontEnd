@@ -2,30 +2,22 @@
 @rendermode InteractiveServer
 @using RecordShop_FrontEnd.Components.UI
 
-<div class="fixed-grid has-3-cols">
-	<div class="grid">
-        <div class="cell is-col-start-2">
-            
-            @if(Model == null)
-            {  
-                <p>Model issues</p>
-            }
-
-            else
-            {                
-				if(Success)
-				{	
-					<p>Data updated</p>
-				}
-				
-				else
-				{	
-					<EditMusicDetails musicRecord="Model" OnSave="HandleSave" />
-				}
-            }
-
-        </div>
-    </div>
+<div class="container is-max-tablet">
+	@if (Model == null)
+	{
+		<p>Model issues</p>
+	}
+	else
+	{
+		if (Success)
+		{
+			<p>Data updated</p>
+		}
+		else
+		{
+			<EditMusicDetails musicRecord="Model" OnSave="HandleSave" />
+		}
+	}
 </div>
 
 

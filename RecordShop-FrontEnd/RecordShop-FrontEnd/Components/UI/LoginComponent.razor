@@ -1,0 +1,55 @@
+﻿
+<div class="section">
+    <div class="container" style="max-width: 420px;">
+
+        <div class="box">
+            <h1 class="title is-4 has-text-centered">Login</h1>
+
+            <div class="field">
+                <label class="label">Email</label>
+                <div class="control">
+                    <InputText class="input has-text-centered" @bind-Value="userCreds.UserName" type="email" placeholder="Enter your email"/>
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-envelope"></i>
+                    </span>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Password</label>
+                <div class="control">
+                    <InputText class="input has-text-centered" @bind-Value="userCreds.Password" type="password" placeholder="Enter your password" />
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                </div>
+            </div>
+
+            <div class="field mt-5">
+                <button class="button is-primary is-fullwidth" @onclick="SubmitCreds">
+                    Login
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@code {
+
+@using RecordShop_FrontEnd.Models
+@rendermode InteractiveServer
+
+	[Parameter]
+	public LoginRequestModel userCreds { get; set; } = new();
+
+	[Parameter]
+	public EventCallback<LoginRequestModel> OnSubmit { get; set; }
+
+	private async Task SubmitCreds()
+	{
+		await OnSubmit.InvokeAsync(userCreds);
+    }
+
+}

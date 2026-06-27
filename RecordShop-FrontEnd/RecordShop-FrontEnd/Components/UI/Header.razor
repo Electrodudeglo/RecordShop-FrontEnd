@@ -36,13 +36,22 @@
             </a>
         </div>
         <div id="navbarBasicExample" class="navbar-menu">
-          
             <div class="navbar-end">
                 <div class="navbar-item">
                     <div class="buttons">
-                        <a class="button is-ghost">
-                            Admin
-                        </a>
+                        @if(!IsLoggedIn)
+                        {
+                            <NavLink href="@("records/auth")">
+                                <div class="button is-ghost">
+                                    Log In
+                                </div>
+                            </NavLink>
+                        }
+                        else {
+                        <button class="button is-ghost" @onclick="HandleLogout">                            
+                            Log Out
+                        </button>
+                        }
                     </div>
                 </div>
             </div>
@@ -50,8 +59,30 @@
     </nav>
 </header>
 
-
-
 @code {
+
+    @using RecordShop_FrontEnd.Services
+    @inject NavigationManager Nav
+    @inject AuthService Auth
+    @rendermode InteractiveServer
+
+    public bool IsLoggedIn = false;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            var token = await Auth.GetToken();
+            IsLoggedIn = !string.IsNullOrWhiteSpace(token);
+            StateHasChanged();
+        }
+    }
+
+    private async Task HandleLogout()
+    {
+        await Auth.Logout();
+        IsLoggedIn = false;
+	}
 
 }

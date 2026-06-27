@@ -1,26 +1,26 @@
 ﻿
-<div class="box p-6">
+<div class="box">
     <div class="has-text-centered">
 
         <div class="mb-5">
             <img src="@records.Cover"
                  alt="Music Album Cover Picture"
-                 class="album-cover"
-                 style="border-radius: 10px; box-shadow: 0 6px 18px rgba(0,0,0,0.15); max-width: 350px;" />
+                  height="300" width="300"
+                  />
         </div>
 
         <div class="mb-4">
-            <p class="is-size-3 has-text-weight-semibold" style="letter-spacing: -0.5px;">
+            <p class="is-size-3 has-text-weight-semibold">
                 @records.RecordTitle
             </p>
 
             <p class="is-size-5">@records.Artists</p>
 
-            <p class="tag is-info is-light mt-3" style="font-size: 1rem;">
+            <p class="tag is-info is-light mt-3">
                 Released: @records.ReleaseYear
             </p>
 
-            <p class="tag is-success is-light mt-2" style="font-size: 1rem;">
+            <p class="tag is-success is-light mt-2">
                 Stock: @records.Stock
             </p>
         </div>

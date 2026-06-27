@@ -1,4 +1,5 @@
 using RecordShop_FrontEnd.Components;
+using RecordShop_FrontEnd.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
+
+// Authentication products
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<RecordService>();
+
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri("http://localhost:5125/")
+
+});
 
 var app = builder.Build();
 
