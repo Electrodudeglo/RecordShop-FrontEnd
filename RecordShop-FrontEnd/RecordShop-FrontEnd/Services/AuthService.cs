@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Json;
 using Microsoft.JSInterop;
+using RecordShop_FrontEnd.Interfaces;
 using RecordShop_FrontEnd.Models;
 
 namespace RecordShop_FrontEnd.Services
@@ -8,13 +9,15 @@ namespace RecordShop_FrontEnd.Services
     {
         private readonly HttpClient _http;
         private readonly IJSRuntime _js;
+        private readonly ToastService _toast;
 
         private const string TokenKey = "authToken";
 
-        public AuthService(HttpClient http, IJSRuntime js)
+        public AuthService(HttpClient http, IJSRuntime js, ToastService toast)
         {
             _http = http;
             _js = js;
+            _toast = toast;
         }
 
         public async Task<bool> Login(LoginRequestModel creds)
@@ -34,6 +37,8 @@ namespace RecordShop_FrontEnd.Services
             // Store only the token string
             await _js.InvokeVoidAsync("sessionStorage.setItem", TokenKey, result.Token);
 
+            _toast.Show("Logged in", ToastEnum.Success);
+
             return true;
         }
 
@@ -49,6 +54,8 @@ namespace RecordShop_FrontEnd.Services
 
             // Remove token from sessionStorage
             await _js.InvokeVoidAsync("sessionStorage.removeItem", TokenKey);
+
+            _toast.Show("Logged out", ToastEnum.Info);
         }
     }
 

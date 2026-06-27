@@ -1,26 +1,33 @@
-﻿@if(CloseToast)
-{
-	<div class="notification is-success container is-max-tablet p-3 mb-5">
-		<button class="delete" @onclick="OnClose"></button>
-		<p class="has-text-centered">Message</p>
-	</div>
-
-}
+﻿<div class="toast-container" style="position:fixed; top:20px; right:20px; z-index:9999;">
+    @foreach (var toast in ToastService.Messages)
+    {
+        <div class="notification @GetCss(toast.Type)">
+            <button class="delete" @onclick="() => Close(toast)"></button>
+            @toast.Text
+        </div>
+    }
+</div>
 
 @code {
+    @using RecordShop_FrontEnd
+    @inject Interfaces.IToastService ToastService
 
-@rendermode InteractiveServer
+    protected override void OnInitialized()
+    {
+        ToastService.OnChange += StateHasChanged;
+    }
 
-	public bool CloseToast = false;
-	public string Message { get; set; } = String.Empty;
+    private void Close(ToastMessageClass toast)
+    {
+        ToastService.Remove(toast);
+    }
 
-
-
-
-	public void OnClose()
-	{	
-		CloseToast = false;
-	}
-
-
+    private string GetCss(ToastEnum type) => type switch
+    {
+        ToastEnum.Success => "is-success",
+        ToastEnum.Error => "is-danger",
+        ToastEnum.Warning => "is-warning",
+        ToastEnum.Info => "is-info",
+        _ => "is-info"
+    };
 }

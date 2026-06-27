@@ -1,4 +1,5 @@
 using RecordShop_FrontEnd.Components;
+using RecordShop_FrontEnd.Interfaces;
 using RecordShop_FrontEnd.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
+
+builder.Services.AddSingleton<IToastService, ToastService>();
 
 // Authentication products
 builder.Services.AddScoped<AuthService>();
