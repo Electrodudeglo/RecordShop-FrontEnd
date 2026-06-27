@@ -1,8 +1,24 @@
-﻿<div class="notification is-success container is-max-tablet p-3 mb-5">
-	<button class="delete"></button>	
-	<p class="has-text-centered">Message</p>
-</div>
+﻿@if(CloseToast)
+{
+	<div class="notification is-success container is-max-tablet p-3 mb-5">
+		<button class="delete" @onclick="OnClose"></button>
+		<p class="has-text-centered">Message</p>
+	</div>
+
+}
 
 @code {
+
+@rendermode InteractiveServer
+
+	public bool CloseToast = true;
+	public string Message { get; set; } = String.Empty;
+
+
+	public void OnClose()
+	{	
+		CloseToast = false;
+	}
+
 
 }
