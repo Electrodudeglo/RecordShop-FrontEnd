@@ -1,20 +1,40 @@
-﻿<div class="toast-container" style="position:fixed; top:20px; right:20px; z-index:9999;">
+﻿<div class="" style="position:fixed; right:20px; z-index:99999">
     @foreach (var toast in ToastService.Messages)
     {
         <div class="notification @GetCss(toast.Type)">
-            <button class="delete" @onclick="() => Close(toast)"></button>
+            <div style="position:fixed; right:25px; top:75px">
+                <button class="delete is-small" @onclick="() => Close(toast)"></button>
+            </div>
             @toast.Text
         </div>
     }
 </div>
 
 @code {
-    @using RecordShop_FrontEnd
-    @inject Interfaces.IToastService ToastService
+@using RecordShop_FrontEnd
+@inject Interfaces.IToastService ToastService
+
+    public bool DebugMode = true;
+
 
     protected override void OnInitialized()
     {
-        ToastService.OnChange += StateHasChanged;
+        ToastService.OnChange += HandleToastChanged;
+
+        if(DebugMode)
+        {
+            ToastService.Clear();
+            ToastService.DebugToaster();
+        }
+    }
+
+   
+    private void HandleToastChanged()
+    {
+        InvokeAsync(() =>
+        {
+            StateHasChanged();       
+        });
     }
 
     private void Close(ToastMessageClass toast)

@@ -1,5 +1,6 @@
 ﻿using RecordShop_FrontEnd.Components.UI;
 using RecordShop_FrontEnd.Interfaces;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace RecordShop_FrontEnd.Services
 {
@@ -9,6 +10,8 @@ namespace RecordShop_FrontEnd.Services
         public event Action? OnChange;
         public IReadOnlyList<ToastMessageClass> Messages => _messages;
 
+        private bool DebuggingToast = true;
+
         public void Show(string text, ToastEnum type = ToastEnum.Info, TimeSpan? duration = null)
         {
             var toast = new ToastMessageClass
@@ -17,11 +20,24 @@ namespace RecordShop_FrontEnd.Services
                 Type = type,
                 Duration = duration ?? TimeSpan.FromSeconds(3)
             };
-
             _messages.Add(toast);
             OnChange?.Invoke();
-
             _ = AutoRemoveAsync(toast);
+        }
+
+        public void DebugToaster()
+        {
+            if(DebuggingToast)
+            {            
+                Show("Debug toast", ToastEnum.Info, TimeSpan.FromSeconds(999));
+            }
+        }
+
+
+        public void Clear()
+        {
+            _messages.Clear();
+            OnChange?.Invoke();
         }
         public void Remove(ToastMessageClass message)
         {
@@ -33,6 +49,5 @@ namespace RecordShop_FrontEnd.Services
             await Task.Delay(toast.Duration);
             Remove(toast);
         }
-
     }
 }

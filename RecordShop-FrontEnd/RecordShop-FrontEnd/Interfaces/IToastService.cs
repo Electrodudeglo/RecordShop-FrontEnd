@@ -6,5 +6,10 @@
         IReadOnlyList<ToastMessageClass> Messages { get; }
         void Show(string text, ToastEnum type = ToastEnum.Info, TimeSpan? duration=null);
         void Remove(ToastMessageClass message);
+
+        void DebugToaster();
+
+        void Clear();
+
 }
 }
