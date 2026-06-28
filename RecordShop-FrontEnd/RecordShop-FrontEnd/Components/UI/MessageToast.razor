@@ -1,0 +1,53 @@
+﻿<div class="" style="position:fixed; right:20px; z-index:99999">
+    @foreach (var toast in ToastService.Messages)
+    {
+        <div class="notification @GetCss(toast.Type) mt-4">
+            <div style="position:fixed; right:25px; top:90px">
+                <button class="delete is-small" @onclick="() => Close(toast)"></button>
+            </div>
+            @toast.Text
+        </div>
+    }
+</div>
+
+@code {
+@using RecordShop_FrontEnd
+@inject Interfaces.IToastService ToastService
+
+    public bool DebugMode = false;
+
+
+    protected override void OnInitialized()
+    {
+        ToastService.OnChange += HandleToastChanged;
+
+        if(DebugMode)
+        {
+            ToastService.Clear();
+            ToastService.DebugToaster();
+        }
+    }
+
+   
+    private void HandleToastChanged()
+    {
+        InvokeAsync(() =>
+        {
+            StateHasChanged();       
+        });
+    }
+
+    private void Close(ToastMessageClass toast)
+    {
+        ToastService.Remove(toast);
+    }
+
+    private string GetCss(ToastEnum type) => type switch
+    {
+        ToastEnum.Success => "is-success",
+        ToastEnum.Error => "is-danger",
+        ToastEnum.Warning => "is-warning",
+        ToastEnum.Info => "is-info",
+        _ => "is-info"
+    };
+}

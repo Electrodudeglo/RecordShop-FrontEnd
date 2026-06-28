@@ -39,7 +39,7 @@
 			var http = new HttpClient();
 			var response = await http.GetFromJsonAsync<MusicRecordModel>($"http://localhost:5125/api/v1/records/{Id}");
 
-			Model = response;
+			Model = response ?? new();
 
 		}
 		catch (Exception e)

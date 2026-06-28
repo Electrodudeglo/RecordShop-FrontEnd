@@ -13,11 +13,13 @@
 @rendermode InteractiveServer
 @inject NavigationManager Nav
 
-	[Inject] private AuthService Auth { get; set; }
+	[Inject] private AuthService? Auth { get; set; } = null;
+
 	
 	private async Task HandleLogin(LoginRequestModel creds)
 	{
-		var success = await Auth.Login(creds);
+
+		bool success = await Auth.Login(creds);
 
 		if(success)
 		{
