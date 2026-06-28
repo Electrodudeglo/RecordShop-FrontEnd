@@ -61,13 +61,17 @@
 			if(response.IsSuccessStatusCode)
 			{
 				Success = true;
-            }
-        }
+			}
 
-        catch
-        {
-            
+			else
+			{
+				Console.WriteLine(response.StatusCode);
+			}
+		}
 
+		catch(Exception e)
+		{
+			Console.WriteLine(e.Message);
         }
 
 }

@@ -44,19 +44,13 @@
 
 @using RecordShop_FrontEnd.Models
 
+
+
 	[Parameter]
 	public MusicRecordModel records { get; set; } = new();
 
     [Parameter]
-    public EventCallback<int> EditRequested { get; set; }
-
-    [Parameter]
     public EventCallback<int> DeleteRequested { get; set; }
-
-    private async Task OnEdit(int id)
-    {
-        await EditRequested.InvokeAsync(id);
-    }
 
     private async Task OnDelete(int id)
     {

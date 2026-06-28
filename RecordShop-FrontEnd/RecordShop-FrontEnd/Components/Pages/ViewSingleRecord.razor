@@ -1,14 +1,17 @@
 ﻿@page "/records/view/{Id:int}"
 
 <div class="container is-max-tablet"> 
-	<MusicCard records="Model" />
+	<MusicCard records="Model" DeleteRequested="HandleDeleteRequest"  />
 </div>
-
 
 
 @code {
 @using RecordShop_FrontEnd.Components.UI
 @using RecordShop_FrontEnd.Models
+@using RecordShop_FrontEnd.Services
+@rendermode InteractiveServer
+@inject NavigationManager Nav
+
 
 	[Parameter]
 	public MusicRecordModel Model { get; set; } = new();
@@ -16,10 +19,13 @@
 	[Parameter]
 	public int Id { get; set; }
 
+	[Inject] public RecordService recordService { get; set; }
+
+
+
 
 	protected override async Task OnInitializedAsync()
 	{
-
 		try
 		{
 			var http = new HttpClient();
@@ -30,22 +36,26 @@
 			{
 				Model = response;
 			}
-
 			else
 			{
 
-				
 			}
-
 		}
 
-		catch
+		catch(Exception e)
 		{
-			
-
+			Console.WriteLine(e.Message);
 		}
+	}
 
-
+	private async Task HandleDeleteRequest()
+	{
+		var success = await recordService.DeleteRecord(Id);
+		
+		if(success)
+		{
+			Nav.NavigateTo("/");
+		}	
 	}
 
 
