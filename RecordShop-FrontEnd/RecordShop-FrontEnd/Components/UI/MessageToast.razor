@@ -1,8 +1,8 @@
 ﻿<div class="" style="position:fixed; right:20px; z-index:99999">
     @foreach (var toast in ToastService.Messages)
     {
-        <div class="notification @GetCss(toast.Type)">
-            <div style="position:fixed; right:25px; top:75px">
+        <div class="notification @GetCss(toast.Type) mt-4">
+            <div style="position:fixed; right:25px; top:90px">
                 <button class="delete is-small" @onclick="() => Close(toast)"></button>
             </div>
             @toast.Text
@@ -14,7 +14,7 @@
 @using RecordShop_FrontEnd
 @inject Interfaces.IToastService ToastService
 
-    public bool DebugMode = true;
+    public bool DebugMode = false;
 
 
     protected override void OnInitialized()

@@ -12,6 +12,11 @@ namespace RecordShop_FrontEnd.Services
 
         private bool DebuggingToast = true;
 
+        public ToastService()
+        {
+            _messages.Clear();
+        }
+
         public void Show(string text, ToastEnum type = ToastEnum.Info, TimeSpan? duration = null)
         {
             var toast = new ToastMessageClass
@@ -21,6 +26,12 @@ namespace RecordShop_FrontEnd.Services
                 Duration = duration ?? TimeSpan.FromSeconds(3)
             };
             _messages.Add(toast);
+
+            if (_messages.Count > 1)
+            {
+                _messages.RemoveRange(0, _messages.Count - 1);
+            }
+
             OnChange?.Invoke();
             _ = AutoRemoveAsync(toast);
         }
