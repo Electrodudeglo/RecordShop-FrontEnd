@@ -45,7 +45,7 @@ protected override async Task OnAfterRenderAsync(bool firstRender)
 {
 	if (firstRender && !_hasLoaded)
 	{	
-		await Task.Delay(3000); // simulate slow API
+		// await Task.Delay(1000);
 		_hasLoaded = true;
 
 		var http = new HttpClient();
@@ -62,8 +62,7 @@ protected override async Task OnAfterRenderAsync(bool firstRender)
 
 	private async Task HandleDeleteRequest()
 	{
-		var success = await RecordService.DeleteRecord(Id);
-		
+		var success = await RecordService.DeleteRecord(Id);	
 		if(success)
 		{
 			Nav.NavigateTo("/");
