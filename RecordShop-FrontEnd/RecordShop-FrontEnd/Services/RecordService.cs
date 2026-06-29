@@ -58,8 +58,7 @@
             {
                 _toast.Show("Successfully Deleted", ToastEnum.Success);
             }
-
-            return response.IsSuccessStatusCode;
+            return true;
         }       
 }
 

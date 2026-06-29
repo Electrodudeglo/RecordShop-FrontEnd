@@ -1,8 +1,19 @@
 ﻿@page "/records/view/{Id:int}"
 
-<div class="container is-max-tablet"> 
-	<MusicCard records="Model" DeleteRequested="HandleDeleteRequest"  />
-</div>
+@if (_isLoading)
+{
+	<div class="container has-text-centered">
+		<progress class="progress is-primary" max="100">Loading</progress>
+		<p class="mt-3">Loading record...</p>
+	</div>
+}
+else
+{
+	<div class="container is-max-tablet">
+		<MusicCard records="Model" DeleteRequested="HandleDeleteRequest" />
+	</div>
+}
+
 
 
 @code {
@@ -19,38 +30,39 @@
 	[Parameter]
 	public int Id { get; set; }
 
-	[Inject] public RecordService recordService { get; set; }
+	[Inject] public RecordService RecordService { get; set; }
 
-
+	private bool _isLoading = true;
+	private bool _hasLoaded = false;
 
 
 	protected override async Task OnInitializedAsync()
 	{
-		try
-		{
-			var http = new HttpClient();
-
-			var response = await http.GetFromJsonAsync<MusicRecordModel>($"http://localhost:5125/api/v1/records/{Id}");
-
-			if (response !=null)
-			{
-				Model = response;
-			}
-			else
-			{
-
-			}
-		}
-
-		catch(Exception e)
-		{
-			Console.WriteLine(e.Message);
-		}
+		_isLoading = true;
 	}
+
+protected override async Task OnAfterRenderAsync(bool firstRender)
+{
+	if (firstRender && !_hasLoaded)
+	{	
+		await Task.Delay(3000); // simulate slow API
+		_hasLoaded = true;
+
+		var http = new HttpClient();
+		var response = await http.GetFromJsonAsync<MusicRecordModel>(
+			$"http://localhost:5125/api/v1/records/{Id}");
+
+		Model = response ?? new MusicRecordModel();
+		_isLoading = false;
+
+		await InvokeAsync(StateHasChanged);
+	}
+}
+
 
 	private async Task HandleDeleteRequest()
 	{
-		var success = await recordService.DeleteRecord(Id);
+		var success = await RecordService.DeleteRecord(Id);
 		
 		if(success)
 		{
