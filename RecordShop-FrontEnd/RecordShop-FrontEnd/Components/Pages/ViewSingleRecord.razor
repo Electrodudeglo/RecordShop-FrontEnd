@@ -15,15 +15,9 @@
 	else
 	{
 		<div class="container is-max-tablet">
-			<MusicCard records="Model" DeleteRequested="HandleDeleteRequest" />
+			<MusicCard records="Model" />
 		</div>
-		
-
-	if(_showModal)
-	{	
-		<Modal />
 	}
-}
 
 
 @code {
@@ -34,11 +28,7 @@
 	[Parameter]
 	public int Id { get; set; }
 
-	[Inject] public RecordService RecordService { get; set; }
-
 	private bool _isLoading = true;
-
-	private bool _showModal = true;
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -56,15 +46,6 @@
 			Console.WriteLine(e.Message);
 		}
 
-	}
-
-	private async Task HandleDeleteRequest()
-	{
-		var success = await RecordService.DeleteRecord(Id);	
-		if(success)
-		{
-			Nav.NavigateTo("/");
-		}	
 	}
 
 }
