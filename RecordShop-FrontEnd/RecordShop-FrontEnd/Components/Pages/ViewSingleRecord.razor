@@ -32,7 +32,6 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-
 		try
 		{
 			var http = new HttpClient();
@@ -40,12 +39,9 @@
 			Model = response ?? new MusicRecordModel();
 			_isLoading = false;
 		}
-
 		catch(Exception e)
 		{
 			Console.WriteLine(e.Message);
 		}
-
 	}
-
 }

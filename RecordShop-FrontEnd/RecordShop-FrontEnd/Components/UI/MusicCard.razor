@@ -49,8 +49,10 @@
 @code {
 
     [Inject] public RecordService RecordService { get; set; }
+    
     [Parameter]
     public MusicRecordModel records { get; set; } = new();
+    
     private bool _showModal = false;
 
 
