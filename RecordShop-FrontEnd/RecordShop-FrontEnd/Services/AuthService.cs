@@ -44,7 +44,15 @@ namespace RecordShop_FrontEnd.Services
 
         public async Task<string?> GetToken()
         {
-            return await _js.InvokeAsync<string>("sessionStorage.getItem", TokenKey);
+            try
+            {
+                return await _js.InvokeAsync<string>("sessionStorage.getItem", TokenKey);
+            }
+            catch
+            {
+                // During prerendering or if JS isn’t ready
+                return null;
+            }
         }
 
         public async Task Logout()
