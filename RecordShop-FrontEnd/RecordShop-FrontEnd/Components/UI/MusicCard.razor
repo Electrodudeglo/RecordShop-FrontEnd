@@ -1,14 +1,15 @@
 ﻿@using RecordShop_FrontEnd.Models
 @using RecordShop_FrontEnd.Services
 @inject NavigationManager Nav
+@inject AuthService AuthService
+
 <div class="box">
     <div class="has-text-centered">
 
         <div class="mb-5">
             <img src="@records.Cover"
                  alt="Music Album Cover Picture"
-                  height="300" width="300"
-                  />
+                 height="300" width="300" />
         </div>
 
         <div class="mb-4">
@@ -27,34 +28,45 @@
             </p>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="buttons is-centered mt-5">
-            <NavLink class="button is-dark" href="@($"/records/edit/{records.Id}")">
-                Edit
-            </NavLink>
+        @if (_isAuthenticated)
+        {
+            <div class="buttons is-centered mt-5">
+                <NavLink class="button is-dark" href="@($"/records/edit/{records.Id}")">
+                    Edit
+                </NavLink>
 
-            <button class="button is-danger" @onclick="DisplayModal">          
-                Delete
-            </button>
-        </div>
-
+                <button class="button is-danger" @onclick="DisplayModal">
+                    Delete
+                </button>
+            </div>
+        }
     </div>
 </div>
 
-    @if(_showModal)
-    {
-        <Modal OnClose="HandleClose" OnConfirmDelete="ConfirmDelete" />
-    }
+@if (_showModal)
+{
+    <Modal OnClose="HandleClose" OnConfirmDelete="ConfirmDelete" />
+}
 
 @code {
-
     [Inject] public RecordService RecordService { get; set; }
-    
+
     [Parameter]
     public MusicRecordModel records { get; set; } = new();
-    
-    private bool _showModal = false;
 
+    private bool _showModal = false;
+    private bool _isAuthenticated = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Safe place to call JS (GetToken uses JS)
+            var token = await AuthService.GetToken();
+            _isAuthenticated = !string.IsNullOrWhiteSpace(token);
+            StateHasChanged();
+        }
+    }
 
     private void DisplayModal()
     {
@@ -68,14 +80,12 @@
 
     private async Task ConfirmDelete()
     {
-        var success =  await RecordService.DeleteRecord(records.Id);
+        var success = await RecordService.DeleteRecord(records.Id);
 
-        if(success)
+        if (success)
         {
             Nav.NavigateTo("/");
             _showModal = false;
         }
     }
-
-
 }
