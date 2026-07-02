@@ -1,4 +1,6 @@
-﻿
+﻿@using RecordShop_FrontEnd.Models
+@using RecordShop_FrontEnd.Services
+@inject NavigationManager Nav
 <div class="box">
     <div class="has-text-centered">
 
@@ -31,8 +33,7 @@
                 Edit
             </NavLink>
 
-            <button class="button is-danger"
-                    @onclick="() => OnDelete(records.Id)">
+            <button class="button is-danger" @onclick="DisplayModal">          
                 Delete
             </button>
         </div>
@@ -40,21 +41,41 @@
     </div>
 </div>
 
+    @if(_showModal)
+    {
+        <Modal OnClose="HandleClose" OnConfirmDelete="ConfirmDelete" />
+    }
+
 @code {
 
-@using RecordShop_FrontEnd.Models
-
-
-
-	[Parameter]
-	public MusicRecordModel records { get; set; } = new();
-
+    [Inject] public RecordService RecordService { get; set; }
+    
     [Parameter]
-    public EventCallback<int> DeleteRequested { get; set; }
+    public MusicRecordModel records { get; set; } = new();
+    
+    private bool _showModal = false;
 
-    private async Task OnDelete(int id)
+
+    private void DisplayModal()
     {
-        await DeleteRequested.InvokeAsync(id);
+        _showModal = true;
     }
+
+    private void HandleClose()
+    {
+        _showModal = false;
+    }
+
+    private async Task ConfirmDelete()
+    {
+        var success =  await RecordService.DeleteRecord(records.Id);
+
+        if(success)
+        {
+            Nav.NavigateTo("/");
+            _showModal = false;
+        }
+    }
+
 
 }
