@@ -1,5 +1,6 @@
 ﻿@page "/records/edit/{Id:int}"
 @rendermode InteractiveServer
+@using RecordShop_FrontEnd.Components.Layout
 @using RecordShop_FrontEnd.Components.UI
 @using RecordShop_FrontEnd.Models
 @using RecordShop_FrontEnd.Services
@@ -16,11 +17,8 @@
 
 else
 {	
-	<div class="container">
-		<div class="notification is-info has-text-centered">
-			<p class="is-size-4">Unable to access Page</p>
-		</div>
-	</div>
+	@attribute [Layout(typeof(ErrorLayout))]
+	<ErrorPage/>
 }
 
 
@@ -34,6 +32,7 @@ else
 	[Inject] public RecordService recordService { get; set; }
 
 	private bool _isAuthenticated = false;
+	
 
 	protected override async Task OnInitializedAsync()
 	{
