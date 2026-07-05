@@ -9,7 +9,7 @@
 
 
 @if(_isAuthenticated)
-{	
+{		
 	<div class="container is-max-tablet">
 		<EditMusicDetails musicRecord="Model" OnSave="HandleSave" />
 	</div>
@@ -17,7 +17,6 @@
 
 else
 {	
-	@attribute [Layout(typeof(ErrorLayout))]
 	<ErrorPage/>
 }
 
