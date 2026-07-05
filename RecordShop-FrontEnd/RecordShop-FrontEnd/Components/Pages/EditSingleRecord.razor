@@ -1,36 +1,37 @@
 ﻿@page "/records/edit/{Id:int}"
 @rendermode InteractiveServer
+@using RecordShop_FrontEnd.Components.Layout
 @using RecordShop_FrontEnd.Components.UI
+@using RecordShop_FrontEnd.Models
+@using RecordShop_FrontEnd.Services
+@inject NavigationManager Nav
+@inject AuthService service
 
-<div class="container is-max-tablet">
-	@if (Model == null)
-	{
-		<p>Model issues</p>
-	}
-	else
-	{
-		if (Success)
-		{
-			<p>Data updated</p>
-		}
-		else
-		{
-			<EditMusicDetails musicRecord="Model" OnSave="HandleSave" />
-		}
-	}
-</div>
+
+@if(_isAuthenticated)
+{		
+	<div class="container is-max-tablet">
+		<EditMusicDetails musicRecord="Model" OnSave="HandleSave" />
+	</div>
+}
+
+else
+{	
+	<ErrorPage/>
+}
 
 
 @code {
-@using RecordShop_FrontEnd.Models
-
 	[Parameter]
 	public MusicRecordModel Model { get; set; } = new();
 
 	[Parameter]
 	public int Id { get; set; }
 
-	public bool Success { get; set; } = false;
+	[Inject] public RecordService recordService { get; set; }
+
+	private bool _isAuthenticated = false;
+	
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -48,32 +49,29 @@
 		}
 	}
 
-
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if(firstRender)
+		{
+			var token = await service.GetToken();
+			_isAuthenticated = !string.IsNullOrWhiteSpace(token);
+			StateHasChanged();
+		}
+	}
 
 	private async Task HandleSave(MusicRecordModel updateRecord)
 	{
 		try
 		{
-			var http = new HttpClient();
-
-			var response = await http.PutAsJsonAsync<MusicRecordModel>($"http://localhost:5125/api/v1/records/{Id}", updateRecord);
-
-			if(response.IsSuccessStatusCode)
+			var success = await recordService.UpdateRecord(Id,updateRecord);
+			if(success)
 			{
-				Success = true;
-			}
-
-			else
-			{
-				Console.WriteLine(response.StatusCode);
+				Nav.NavigateTo("/");
 			}
 		}
-
 		catch(Exception e)
 		{
 			Console.WriteLine(e.Message);
-        }
-
-}
-
+		}
+	}
 }

@@ -44,9 +44,14 @@
 
         public async Task<bool> UpdateRecord(int id, MusicRecordModel record)
         {
-            if (!await AttachToken()) return false;
-            var response = await _http.PutAsJsonAsync("api/musicrecord", record);
-            return response.IsSuccessStatusCode;
+            if (!await AttachToken()) { _toast.Show("Unauthorized", ToastEnum.Error); return false; }
+            var response = await _http.PutAsJsonAsync($"api/v1/records/{id}", record);
+
+            if (response.IsSuccessStatusCode)
+            {
+                _toast.Show("Record Changed", ToastEnum.Success);
+            }
+            return true;
         }
 
         public async Task<bool> DeleteRecord(int id)
