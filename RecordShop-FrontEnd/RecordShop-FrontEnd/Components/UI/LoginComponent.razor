@@ -25,10 +25,14 @@
                 </div>
             </div>
 
+            
             <div class="field mt-5">
                 <button class="button is-primary is-fullwidth @(isLoading ? "is-loading" :"")" @onclick="SubmitCreds" disabled="@(isLoading)">
                     Login
                 </button>
+            </div>
+            <div class="has-text-centered has-text-danger">
+                @ErrorMessage
             </div>
         </div>
 
@@ -49,13 +53,20 @@
 
     private bool isLoading { get; set; } = false;
 
+    private string ErrorMessage { get; set; } = String.Empty;
+
 
 	private async Task SubmitCreds()
 	{
         isLoading = true;
+
         try
         {
-        await OnSubmit.InvokeAsync(userCreds);    
+            await OnSubmit.InvokeAsync(userCreds);
+        }
+        catch(Exception e)
+        {
+            ErrorMessage = "Invalid Login Details";
         }
         finally
         {
