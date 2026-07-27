@@ -26,7 +26,7 @@
             </div>
 
             <div class="field mt-5">
-                <button class="button is-primary is-fullwidth" @onclick="SubmitCreds">
+                <button class="button is-primary is-fullwidth @(isLoading ? "is-loading" :"")" @onclick="SubmitCreds" disabled="@(isLoading)">
                     Login
                 </button>
             </div>
@@ -47,9 +47,20 @@
 	[Parameter]
 	public EventCallback<LoginRequestModel> OnSubmit { get; set; }
 
+    private bool isLoading { get; set; } = false;
+
+
 	private async Task SubmitCreds()
 	{
-		await OnSubmit.InvokeAsync(userCreds);
+        isLoading = true;
+        try
+        {
+        await OnSubmit.InvokeAsync(userCreds);    
+        }
+        finally
+        {
+            isLoading = false;
+        }
     }
 
 }
