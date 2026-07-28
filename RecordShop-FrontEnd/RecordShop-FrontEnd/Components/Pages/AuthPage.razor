@@ -16,19 +16,18 @@
 	[Inject] private AuthService? Auth { get; set; } = null;
 
 	
-	private async Task HandleLogin(LoginRequestModel creds)
+	public async Task HandleLogin(LoginRequestModel creds)
 	{
 
-		bool success = await Auth.Login(creds);
+		bool result = await Auth.Login(creds);
 
-		if(success)
+		if(result)
 		{
-			Console.WriteLine(Auth.GetToken());
 			Nav.NavigateTo("/", forceLoad: true);
 		}
 		else
 		{
-			Console.WriteLine("Invalid Login");
+			throw new Exception("Invalid credentials");
 		}
 	}
 }

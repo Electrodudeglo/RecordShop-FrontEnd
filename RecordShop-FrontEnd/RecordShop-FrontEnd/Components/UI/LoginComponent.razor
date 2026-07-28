@@ -5,30 +5,36 @@
         <div class="box">
             <h1 class="title is-4 has-text-centered">Login</h1>
 
-            <div class="field">
-                <label class="label">Email</label>
-                <div class="control">
-                    <InputText class="input has-text-centered" @bind-Value="userCreds.UserName" type="email" placeholder="Enter your email"/>
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-envelope"></i>
-                    </span>
+           <fieldset disabled="@(disableInput)">
+                <div class="field">
+                    <label class="label">Email</label>
+                    <div class="control">
+                        <InputText class="input has-text-centered mb-2" @bind-Value="userCreds.UserName" type="email" placeholder="Enter your email" />
+                        <div class="mx-3">
+                            <p class="mb-5 has-text-centered has-text-danger">@errorEmail</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="field">
-                <label class="label">Password</label>
-                <div class="control">
-                    <InputText class="input has-text-centered" @bind-Value="userCreds.Password" type="password" placeholder="Enter your password" />
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-lock"></i>
-                    </span>
+                <div class="field">
+                    <label class="label">Password</label>
+                    <div class="control">
+                        <InputText class="input has-text-centered mb-2" @bind-Value="userCreds.Password" type="password" placeholder="Enter your password" />
+                        <div class="mx-3">
+                            <p class="mb-5 has-text-centered has-text-danger">@errorPassword</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
+           </fieldset>
 
+            
             <div class="field mt-5">
-                <button class="button is-primary is-fullwidth" @onclick="SubmitCreds">
+                <button class="button is-primary is-fullwidth @(isLoading ? "is-loading" :"")" @onclick="SubmitCreds" disabled="@(isLoading)">
                     Login
                 </button>
+            </div>
+            <div class="has-text-centered has-text-danger">
+                @errorCreds
             </div>
         </div>
 
@@ -47,9 +53,60 @@
 	[Parameter]
 	public EventCallback<LoginRequestModel> OnSubmit { get; set; }
 
+    private bool isLoading { get; set; } = false;
+
+    private bool disableInput { get; set; } = false;
+
+    private string errorCreds { get; set; } = String.Empty;
+
+    private string errorEmail { get; set; } = String.Empty;
+
+    private string errorPassword { get; set; } = String.Empty;
+
+
 	private async Task SubmitCreds()
 	{
-		await OnSubmit.InvokeAsync(userCreds);
+        isLoading = true;
+        
+        if(string.IsNullOrWhiteSpace(userCreds.UserName))
+        {
+            errorEmail = "Email is empty";
+            isLoading = false;
+            return;
+        }
+        
+        if (!userCreds.UserName.Contains("@"))
+        {
+            errorEmail = "Email must be valid";
+            isLoading = false;
+            return;
+        }
+
+        if(string.IsNullOrWhiteSpace(userCreds.Password))
+        {
+            errorPassword = "Password is empty";
+            isLoading = false;
+            return;
+        }
+
+        disableInput = true;
+
+        await Task.Delay(800);
+
+        try
+        {
+            await OnSubmit.InvokeAsync(userCreds);
+        }
+        catch(Exception e)
+        {
+            errorCreds = "Invalid Login Details";
+
+            disableInput = false;
+        }
+        finally
+        {
+            isLoading = false;
+        }
     }
 
 }
