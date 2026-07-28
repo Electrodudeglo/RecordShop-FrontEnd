@@ -9,9 +9,9 @@
                 <label class="label">Email</label>
                 <div class="control">
                     <InputText class="input has-text-centered" @bind-Value="userCreds.UserName" type="email" placeholder="Enter your email"/>
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-envelope"></i>
-                    </span>
+                       <div class="mx-3">
+                           <p class="mb-5 has-text-centered has-text-danger">Invalid Email</p>
+                       </div>
                 </div>
             </div>
 
@@ -55,10 +55,37 @@
 
     private string ErrorMessage { get; set; } = String.Empty;
 
+    private string ErrorEmail { get; set; } = String.Empty;
+
+    private string ErrorPassword { get; set; } = String.Empty;
+
 
 	private async Task SubmitCreds()
 	{
         isLoading = true;
+        
+        if(string.IsNullOrWhiteSpace(userCreds.UserName))
+        {
+            ErrorMessage = "Email is empty";
+            isLoading = false;
+            return;
+        }
+        
+        if (userCreds.UserName.Contains("@"))
+        {
+            ErrorMessage = "Email must be valid";
+            isLoading = false;
+            return;
+        }
+
+        if(string.IsNullOrWhiteSpace(userCreds.Password))
+        {
+            ErrorMessage = "Password is empty";
+            isLoading = false;
+            return;
+        }
+
+        await Task.Delay(800);
 
         try
         {
@@ -66,7 +93,7 @@
         }
         catch(Exception e)
         {
-            ErrorMessage = "Invalid Login Details";
+            ErrorMessage = "Invalid Login Details"; 
         }
         finally
         {
