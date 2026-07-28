@@ -5,25 +5,27 @@
         <div class="box">
             <h1 class="title is-4 has-text-centered">Login</h1>
 
-            <div class="field">
-                <label class="label">Email</label>
-                <div class="control">
-                    <InputText class="input has-text-centered mb-2" @bind-Value="userCreds.UserName" type="email" placeholder="Enter your email"/>
-                       <div class="mx-3">
-                           <p class="mb-5 has-text-centered has-text-danger">@errorEmail</p>
-                       </div>
-                </div>
-            </div>
-
-            <div class="field">
-                <label class="label">Password</label>
-                <div class="control">
-                    <InputText class="input has-text-centered mb-2" @bind-Value="userCreds.Password" type="password" placeholder="Enter your password" />
-                    <div class="mx-3">
-                        <p class="mb-5 has-text-centered has-text-danger">@errorPassword</p>
+           <fieldset disabled="@(disableInput)">
+                <div class="field">
+                    <label class="label">Email</label>
+                    <div class="control">
+                        <InputText class="input has-text-centered mb-2" @bind-Value="userCreds.UserName" type="email" placeholder="Enter your email" />
+                        <div class="mx-3">
+                            <p class="mb-5 has-text-centered has-text-danger">@errorEmail</p>
+                        </div>
                     </div>
                 </div>
-            </div>
+
+                <div class="field">
+                    <label class="label">Password</label>
+                    <div class="control">
+                        <InputText class="input has-text-centered mb-2" @bind-Value="userCreds.Password" type="password" placeholder="Enter your password" />
+                        <div class="mx-3">
+                            <p class="mb-5 has-text-centered has-text-danger">@errorPassword</p>
+                        </div>
+                    </div>
+                </div>
+           </fieldset>
 
             
             <div class="field mt-5">
@@ -87,6 +89,8 @@
             return;
         }
 
+        disableInput = true;
+
         await Task.Delay(800);
 
         try
@@ -95,7 +99,9 @@
         }
         catch(Exception e)
         {
-            errorCreds = "Invalid Login Details"; 
+            errorCreds = "Invalid Login Details";
+
+            disableInput = false;
         }
         finally
         {
