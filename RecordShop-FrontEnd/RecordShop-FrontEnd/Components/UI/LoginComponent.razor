@@ -8,9 +8,9 @@
             <div class="field">
                 <label class="label">Email</label>
                 <div class="control">
-                    <InputText class="input has-text-centered" @bind-Value="userCreds.UserName" type="email" placeholder="Enter your email"/>
+                    <InputText class="input has-text-centered mb-2" @bind-Value="userCreds.UserName" type="email" placeholder="Enter your email"/>
                        <div class="mx-3">
-                           <p class="mb-5 has-text-centered has-text-danger">Invalid Email</p>
+                           <p class="mb-5 has-text-centered has-text-danger">@errorEmail</p>
                        </div>
                 </div>
             </div>
@@ -18,10 +18,10 @@
             <div class="field">
                 <label class="label">Password</label>
                 <div class="control">
-                    <InputText class="input has-text-centered" @bind-Value="userCreds.Password" type="password" placeholder="Enter your password" />
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-lock"></i>
-                    </span>
+                    <InputText class="input has-text-centered mb-2" @bind-Value="userCreds.Password" type="password" placeholder="Enter your password" />
+                    <div class="mx-3">
+                        <p class="mb-5 has-text-centered has-text-danger">@errorPassword</p>
+                    </div>
                 </div>
             </div>
 
@@ -32,7 +32,7 @@
                 </button>
             </div>
             <div class="has-text-centered has-text-danger">
-                @ErrorMessage
+                @errorCreds
             </div>
         </div>
 
@@ -53,11 +53,13 @@
 
     private bool isLoading { get; set; } = false;
 
-    private string ErrorMessage { get; set; } = String.Empty;
+    private bool disableInput { get; set; } = false;
 
-    private string ErrorEmail { get; set; } = String.Empty;
+    private string errorCreds { get; set; } = String.Empty;
 
-    private string ErrorPassword { get; set; } = String.Empty;
+    private string errorEmail { get; set; } = String.Empty;
+
+    private string errorPassword { get; set; } = String.Empty;
 
 
 	private async Task SubmitCreds()
@@ -66,21 +68,21 @@
         
         if(string.IsNullOrWhiteSpace(userCreds.UserName))
         {
-            ErrorMessage = "Email is empty";
+            errorEmail = "Email is empty";
             isLoading = false;
             return;
         }
         
-        if (userCreds.UserName.Contains("@"))
+        if (!userCreds.UserName.Contains("@"))
         {
-            ErrorMessage = "Email must be valid";
+            errorEmail = "Email must be valid";
             isLoading = false;
             return;
         }
 
         if(string.IsNullOrWhiteSpace(userCreds.Password))
         {
-            ErrorMessage = "Password is empty";
+            errorPassword = "Password is empty";
             isLoading = false;
             return;
         }
@@ -93,7 +95,7 @@
         }
         catch(Exception e)
         {
-            ErrorMessage = "Invalid Login Details"; 
+            errorCreds = "Invalid Login Details"; 
         }
         finally
         {
