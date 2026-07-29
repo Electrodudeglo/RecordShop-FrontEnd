@@ -1,4 +1,4 @@
-﻿@using RecordShop_FrontEnd.Models
+﻿@rendermode InteractiveServer
 
 <InputText class="input is-normal" placeholder="Search For Album Title" @bind-Value="searchText" @bind-Value:event="oninput"/>
 
@@ -9,14 +9,5 @@
 
 	[Parameter]
 	public EventCallback<string> searchTextChanged { get; set; }
-
-
-	// private async Task OnInput(ChangeEventArgs e)
-	// {
-	// 	searchText = e.Value?.ToString() ?? "";
-	// 	await searchTextChanged.InvokeAsync(searchText);
-	// }
-
-
 
 }
