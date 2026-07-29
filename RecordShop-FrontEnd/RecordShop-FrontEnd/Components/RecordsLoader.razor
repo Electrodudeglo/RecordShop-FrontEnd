@@ -1,18 +1,23 @@
 ﻿@using RecordShop_FrontEnd.Components.UI
 @using RecordShop_FrontEnd.Models
 
-<SearchBar/>
+    
+    <div class="container is-max-tablet mt-4">
+    <SearchBar />
+        <div class="grid mt-4">
+            @foreach (var record in filteredRecords)
+            {
+            <MusicSummaryCard records="record" />
+            }
+        </div>
+    </div>
 
-@foreach (var record in filteredRecords)
-{
-    <MusicSummaryCard records="record" />
-}
 
 @code {
     private List<MusicRecordModel> allRecords { get; set; } = new();
     private List<MusicRecordModel> filteredRecords { get; set; } = new();
 
-    private string _searchTerms = "vill";
+    private string _searchTerms = "";
 
     private string searchTerms
     {
