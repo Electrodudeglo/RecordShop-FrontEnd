@@ -1,5 +1,13 @@
-﻿<h3>SearchBar</h3>
+﻿<InputText class="input is-normal" placeholder="Search For Album Title" @bind-Value="RecordTitle.RecordTitle"/>
 
 @code {
+@using RecordShop_FrontEnd.Models
+
+	[Parameter]
+	public MusicRecordModel RecordTitle { get; set; } = new();
+	
+
+
+
 
 }
