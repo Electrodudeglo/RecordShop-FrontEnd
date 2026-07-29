@@ -1,12 +1,21 @@
-﻿<InputText class="input is-normal" placeholder="Search For Album Title" @bind-Value="RecordTitle.RecordTitle"/>
+﻿@using RecordShop_FrontEnd.Models
+
+<InputText class="input is-normal" placeholder="Search For Album Title" @bind-Value="searchText" @bind-Value:event="oninput"/>
 
 @code {
-@using RecordShop_FrontEnd.Models
 
 	[Parameter]
-	public MusicRecordModel RecordTitle { get; set; } = new();
-	
+	public string searchText { get; set; } = "";
 
+	[Parameter]
+	public EventCallback<string> searchTextChanged { get; set; }
+
+
+	// private async Task OnInput(ChangeEventArgs e)
+	// {
+	// 	searchText = e.Value?.ToString() ?? "";
+	// 	await searchTextChanged.InvokeAsync(searchText);
+	// }
 
 
 

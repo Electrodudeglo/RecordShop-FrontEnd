@@ -1,37 +1,54 @@
 ﻿@using RecordShop_FrontEnd.Components.UI
-	
-@foreach(var record in _recordsLoader)
-{	
-	<MusicSummaryCard records="record"/>
-}
-
-
-@code {
-
 @using RecordShop_FrontEnd.Models
 
-	private List<MusicRecordModel> _recordsLoader { get; set; } = new();
-	
-	private string loadingIndicator = "";
+<SearchBar/>
 
-	protected override async Task OnInitializedAsync()
-	{
-		try
-		{
-		var http = new HttpClient();
+@foreach (var record in filteredRecords)
+{
+    <MusicSummaryCard records="record" />
+}
 
-		var response = await http.GetFromJsonAsync<List<MusicRecordModel>>($"http://localhost:5125/api/v1/records");
+@code {
+    private List<MusicRecordModel> allRecords { get; set; } = new();
+    private List<MusicRecordModel> filteredRecords { get; set; } = new();
 
-		if (response != null)
-		{
-			_recordsLoader = response;
-		}
+    private string _searchTerms = "vill";
 
-		}
-		catch
-		{
-			
-				
-		}
-	}
+    private string searchTerms
+    {
+        get => _searchTerms;
+        set
+        {
+            _searchTerms = value;
+            FilterAlbums();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var http = new HttpClient();
+        var response = await http.GetFromJsonAsync<List<MusicRecordModel>>(
+            "http://localhost:5125/api/v1/records");
+
+        if (response != null)
+        {
+            allRecords = response;
+            FilterAlbums();
+        }
+    }
+
+    private void FilterAlbums()
+    {
+        if (string.IsNullOrWhiteSpace(searchTerms))
+        {
+            filteredRecords = allRecords;
+        }
+        else
+        {
+            filteredRecords = allRecords
+                .Where(r => r.RecordTitle.Contains(searchTerms, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+    }
+
 }
