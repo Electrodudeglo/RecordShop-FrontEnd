@@ -1,0 +1,17 @@
+﻿<input class="input is-normal"
+        placeholder="Search Album Title"
+       value="@SearchText"
+       @oninput="HandleInput" />
+
+@code {
+    [Parameter]
+    public string SearchText { get; set; } = "";
+
+    [Parameter]
+    public EventCallback<string> SearchTextChanged { get; set; }
+
+    private async Task HandleInput(ChangeEventArgs e)
+    {
+        await SearchTextChanged.InvokeAsync(e.Value?.ToString());
+    }
+}

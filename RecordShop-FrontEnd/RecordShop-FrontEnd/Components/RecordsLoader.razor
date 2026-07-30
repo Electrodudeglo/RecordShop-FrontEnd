@@ -1,38 +1,63 @@
 ﻿@using RecordShop_FrontEnd.Components.UI
+@using RecordShop_FrontEnd.Models
+@rendermode InteractiveServer
 
-	
-@foreach(var record in _recordsLoader)
-{	
-	<MusicSummaryCard records="record"/>
-}
-
+    <div class="container is-max-tablet mt-4">
+    <SearchBar SearchText="@searchTerms" SearchTextChanged="OnsearchChanged" />
+        <div class="grid mt-4">
+            @foreach (var record in filteredRecords)
+            {
+            <MusicSummaryCard records="record" />
+            }
+        </div>
+    </div>
 
 @code {
+    private List<MusicRecordModel> allRecords { get; set; } = new();
+    private List<MusicRecordModel> filteredRecords { get; set; } = new();
 
-@using RecordShop_FrontEnd.Models
+    private string _searchTerms = "";
 
-	private List<MusicRecordModel> _recordsLoader { get; set; } = new();
-	
-	private string loadingIndicator = "";
+    private string searchTerms
+    {
+        get => _searchTerms;
+        set
+        {
+            _searchTerms = value;
+            FilterAlbums();
+        }
+    }
 
-	protected override async Task OnInitializedAsync()
-	{
-		try
-		{
-		var http = new HttpClient();
+    protected override async Task OnInitializedAsync()
+    {
+        var http = new HttpClient();
+        var response = await http.GetFromJsonAsync<List<MusicRecordModel>>(
+            "http://localhost:5125/api/v1/records");
 
-		var response = await http.GetFromJsonAsync<List<MusicRecordModel>>($"http://localhost:5125/api/v1/records");
+        if (response != null)
+        {
+            allRecords = response;
+            filteredRecords = allRecords;
+        }
+    }
 
-		if (response != null)
-		{
-			_recordsLoader = response;
-		}
+    private void FilterAlbums()
+    {
+        if (string.IsNullOrWhiteSpace(searchTerms))
+        {
+            filteredRecords = allRecords;
+        }
+        else
+        {
+            filteredRecords = allRecords
+                .Where(r => r.RecordTitle.Contains(searchTerms, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+    }
 
-		}
-		catch
-		{
-			
-				
-		}
-	}
+    private void OnsearchChanged(string value)
+    {
+        searchTerms = value;
+    }
+
 }
