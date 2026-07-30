@@ -1,20 +1,16 @@
-﻿<p>
-    <input @bind:event="oninput" @bind:get="inputValue" @bind:set="OnInput" />
-</p>
-
-<p>
-    <code>inputValue</code>: @inputValue
-</p>
+﻿<input class="input is-normal"
+       value="@SearchText"
+       @oninput="HandleInput" />
 
 @code {
+    [Parameter]
+    public string SearchText { get; set; } = "";
 
-    @rendermode InteractiveServer
-    private string? inputValue;
+    [Parameter]
+    public EventCallback<string> SearchTextChanged { get; set; }
 
-    private void OnInput(string value)
+    private async Task HandleInput(ChangeEventArgs e)
     {
-        var newValue = value ?? string.Empty;
-
-        inputValue = newValue.Length > 4 ? "Long!" : newValue;
+        await SearchTextChanged.InvokeAsync(e.Value?.ToString());
     }
 }

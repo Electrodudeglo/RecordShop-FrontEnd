@@ -1,9 +1,9 @@
 ﻿@using RecordShop_FrontEnd.Components.UI
 @using RecordShop_FrontEnd.Models
+@rendermode InteractiveServer
 
-    
     <div class="container is-max-tablet mt-4">
-    <SearchBar/>
+    <SearchBar SearchText="@searchTerms" SearchTextChanged="OnsearchChanged" />
         <div class="grid mt-4">
             @foreach (var record in filteredRecords)
             {
