@@ -1,15 +1,20 @@
-﻿@rendermode InteractiveServer
-<InputText class="input is-normal" placeholder="Search For Album Title" @bind-Value="searchText"/>
+﻿<p>
+    <input @bind:event="oninput" @bind:get="inputValue" @bind:set="OnInput" />
+</p>
 
-<div>
-	@searchText
-</div>
+<p>
+    <code>inputValue</code>: @inputValue
+</p>
 
 @code {
 
-	[Parameter]
-	public string searchText { get; set; } = "";
+    @rendermode InteractiveServer
+    private string? inputValue;
 
+    private void OnInput(string value)
+    {
+        var newValue = value ?? string.Empty;
 
-
+        inputValue = newValue.Length > 4 ? "Long!" : newValue;
+    }
 }
