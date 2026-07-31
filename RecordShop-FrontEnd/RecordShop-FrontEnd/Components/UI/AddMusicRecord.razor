@@ -1,0 +1,31 @@
+﻿<div class="container box mt-5" style="max-width: 420px">
+	<div class="has-text-centered">		
+		<div class="mb-3">
+			<p> Add Album Title</p>
+		</div>	
+			<div class="mb-4">
+				<InputText class="input has-text-centered" @bind-Value="AlbumTitle"/>
+			</div>
+		<div class="mb-3">
+			<p> Add Artist Name</p>
+		</div>
+		<div class="mb-4">
+			<InputText class="input has-text-centered" @bind-Value="ArtistName" />
+		</div>
+		<div class="mb-5">
+			
+			<button class="button is-primary">
+				Submit
+			</button>
+		</div>
+	</div>
+</div>
+
+@code {
+
+	public string AlbumTitle { get; set; } = String.Empty;
+	public string ArtistName { get; set; } = String.Empty;
+
+
+
+}
