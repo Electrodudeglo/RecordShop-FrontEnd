@@ -1,8 +1,35 @@
 ﻿@page "/records/add"
 @using RecordShop_FrontEnd.Components.UI
+@using RecordShop_FrontEnd.Services
+@rendermode InteractiveServer
+@inject AuthService AuthService
 
+@if (_isAuthenticated)
+{
+	
 	<AddMusicRecord />
 
+}
+else
+{
+	<ErrorPage/>
+}
+
 @code {
+
+    private bool _isAuthenticated = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var token = await AuthService.GetToken();
+            _isAuthenticated = !string.IsNullOrWhiteSpace(token);
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+	}
 
 }
