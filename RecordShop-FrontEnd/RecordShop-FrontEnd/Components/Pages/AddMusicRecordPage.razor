@@ -5,10 +5,8 @@
 @inject AuthService AuthService
 
 @if (_isAuthenticated)
-{
-	
+{	
 	<AddMusicRecord />
-
 }
 else
 {
@@ -31,5 +29,4 @@ else
             Console.WriteLine(e.Message);
         }
 	}
-
 }
