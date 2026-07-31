@@ -1,7 +1,7 @@
 ﻿<header class="ml-4 mr-4">
     <nav class="navbar mt-4 has-shadow" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
-            <a class="navbar-item" href="/">
+            <a class="navbar-item" href="@("/")">
                 <svg width="240"
                      height="120"
                      viewBox="0 0 240 120"
@@ -27,14 +27,29 @@
                     <h1>Waveform Music</h1>
                 </div>
             </a>
-            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
             </a>
         </div>
-        <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-menu">
+            <div class="navbar-start">
+
+                <a class="navbar-item" href="@("/")">
+                    Home
+                </a>
+
+                @if(IsLoggedIn)
+                {
+                    <a class="navbar-item" href="@("records/add")">
+                        Add Album
+                    </a>
+                }
+
+
+            </div>
             <div class="navbar-end">
                 <div class="navbar-item">
                     <div class="buttons">
