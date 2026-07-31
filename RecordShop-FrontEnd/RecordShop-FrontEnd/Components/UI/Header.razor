@@ -36,19 +36,15 @@
         </div>
         <div class="navbar-menu">
             <div class="navbar-start">
-
                 <a class="navbar-item" href="@("/")">
                     Home
                 </a>
-
                 @if(IsLoggedIn)
                 {
                     <a class="navbar-item" href="@("records/add")">
                         Add Album
                     </a>
                 }
-
-
             </div>
             <div class="navbar-end">
                 <div class="navbar-item">
@@ -75,7 +71,6 @@
 </header>
 
 @code {
-
     @using RecordShop_FrontEnd.Services
     @inject NavigationManager Nav
     @inject AuthService Auth
@@ -99,5 +94,4 @@
         await Auth.Logout();
         IsLoggedIn = false;
 	}
-
 }
