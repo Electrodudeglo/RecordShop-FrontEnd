@@ -1,4 +1,9 @@
-﻿<div class="container box mt-5" style="max-width: 420px">
+﻿@using RecordShop_FrontEnd.Services
+@rendermode InteractiveServer
+@inject AuthService Auth 
+
+
+<div class="container box mt-5" style="max-width: 420px">
 	<div class="has-text-centered">		
 		<div class="mb-3">
 			<p> Add Album Title</p>
@@ -25,7 +30,5 @@
 
 	public string AlbumTitle { get; set; } = String.Empty;
 	public string ArtistName { get; set; } = String.Empty;
-
-
 
 }
