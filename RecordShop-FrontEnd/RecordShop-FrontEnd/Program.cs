@@ -15,10 +15,13 @@ builder.Services.AddSingleton<IToastService, ToastService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<RecordService>();
 
+
+//External API products
+builder.Services.AddScoped<DeezerService>();
+
 builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri("http://localhost:5125/")
-
 });
 
 var app = builder.Build();

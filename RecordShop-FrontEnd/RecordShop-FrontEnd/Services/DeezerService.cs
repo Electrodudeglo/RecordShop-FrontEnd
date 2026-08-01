@@ -1,4 +1,4 @@
-﻿namespace RecordShop.FrontEnd.Services
+﻿namespace RecordShop_FrontEnd.Services
 {
 
     using System.Net.Http.Json;
