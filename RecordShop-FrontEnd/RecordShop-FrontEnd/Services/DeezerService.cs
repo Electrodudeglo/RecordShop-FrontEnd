@@ -1,8 +1,9 @@
 ﻿namespace RecordShop_FrontEnd.Services
 {
-
     using System.Net.Http.Json;
     using System.Web;
+   
+    
     public class DeezerService
     {
         private readonly HttpClient _http = new();
@@ -24,7 +25,7 @@
 
             var albumId = searchResults.Data[0].Id;
 
-            return await _http.GetFromJsonAsync<DeezerAlbumDetails>($"album/{albumId}");     
+            return await _http.GetFromJsonAsync<DeezerAlbumDetails>($"album/{albumId}");
         }
     }
 
