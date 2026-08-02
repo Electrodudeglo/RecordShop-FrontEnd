@@ -2,6 +2,7 @@
 @rendermode InteractiveServer
 @inject AuthService Auth
 @inject DeezerService Deezer
+@inject NavigationManager Nav
 
 
 <div class="container box mt-5" style="max-width: 420px">
@@ -175,8 +176,8 @@
     }
 
     private void RejectAlbum()
-    {
-        Console.WriteLine("Album rejected!");
+    { 
+        Nav.NavigateTo("/records/add", forceLoad: true);
     }
 
     private void ResetLoading()
