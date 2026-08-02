@@ -33,6 +33,10 @@
 				Submit
 			</button>
 		</div>
+
+        <div>
+            <p class="has-text-danger">@apiError</p>
+        </div>
 	</div>	
 </div>
 
@@ -64,7 +68,6 @@
     </div>
 }
 
-
 @code {
 
     private DeezerAlbumDetails testAlbum = new DeezerAlbumDetails{
@@ -82,7 +85,7 @@
             new DeezerGenre { Name = "Rock" }
         }
         },
-       
+
         Cover = "",
         Cover_small = "",
         Cover_medium = "",
@@ -112,6 +115,8 @@
             if (!string.IsNullOrWhiteSpace(value)) errorArtist = "";
         }
     }
+
+    private string apiError = "";
 
 
     private string errorTitle = String.Empty;
@@ -158,9 +163,9 @@
 
         else
         {
-
+            apiError = "Album does not exist";           
+            ResetLoading();            
         }
-
     }
 
 
@@ -174,6 +179,11 @@
         Console.WriteLine("Album rejected!");
     }
 
+    private void ResetLoading()
+    {
+        isloading = false;
+        disableInput = false;
+    }
 
 }
 
