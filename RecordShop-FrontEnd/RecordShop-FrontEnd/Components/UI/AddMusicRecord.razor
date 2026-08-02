@@ -6,21 +6,24 @@
 
 <div class="container box mt-5" style="max-width: 420px">
 	<div class="has-text-centered">		
-		<div class="mb-3">
-			<p> Add Album Title</p>
-		</div>	
-			<div class="mb-4">
-				<InputText class="input has-text-centered" @bind-Value="AlbumTitle"/>
+		
+		<fieldset disabled="@(disableInput)">
+			<div class="mb-3">
+				<p> Add Album Title</p>
 			</div>
-		<div class="mb-3">
-			<p> Add Artist Name</p>
-		</div>
-		<div class="mb-4">
-			<InputText class="input has-text-centered" @bind-Value="ArtistName" />
-		</div>
-		<div class="mb-5">
-			
-			<button class="button is-primary">
+			<div class="mb-4">
+				<InputText class="input has-text-centered" @bind-Value="AlbumTitle" />
+			</div>
+			<div class="mb-3">
+				<p> Add Artist Name</p>
+			</div>
+			<div class="mb-4">
+				<InputText class="input has-text-centered" @bind-Value="ArtistName" />
+			</div>
+		</fieldset>
+		
+		<div class="mb-5">	
+			<button class="button is-primary @(isloading ? "is-loading" :"")" @onclick="CallDeezer" disabled="@(isloading)">
 				Submit
 			</button>
 		</div>
@@ -29,7 +32,24 @@
 
 @code {
 
-	public string AlbumTitle { get; set; } = String.Empty;
-	public string ArtistName { get; set; } = String.Empty;
+    public string AlbumTitle { get; set; } = String.Empty;
+    public string ArtistName { get; set; } = String.Empty;
+
+    private DeezerAlbumDetails? album;
+
+    private bool disableInput = false;
+    private bool isloading = false;
+
+    private async Task CallDeezer()
+    {
+        album = await Deezer.FindAlbumSync(AlbumTitle, ArtistName);
+
+        if(album == null)
+        {
+            Console.WriteLine("No Albums?");
+            return;
+        }
+        Console.WriteLine(album.Cover);
+	}
 
 }
