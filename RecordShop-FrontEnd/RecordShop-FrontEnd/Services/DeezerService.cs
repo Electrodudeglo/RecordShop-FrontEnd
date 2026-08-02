@@ -40,8 +40,10 @@
         public string Title { get; set; } = String.Empty;
         public DeezerArtist Artist { get; set; } = new();
         public string Cover { get; set; } = String.Empty;
-        public string CoverBig { get; set; } = String.Empty;
-        public string CoverXl { get; set; } = String.Empty;
+        public string Cover_Small { get; set; } = String.Empty;
+        public string Cover_Medium { get; set; } = String.Empty;
+        public string Cover_Big { get; set; } = String.Empty;
+        public string Cover_Xl { get; set; } = String.Empty;
     }
 
     public class DeezerArtist
@@ -57,9 +59,12 @@
         public string Release_Date { get; set; } = String.Empty;
         public DeezerGenreContainer Genres { get; set; } = new();
         public string Cover { get; set; } = String.Empty;
-        public string CoverBig { get; set; } = String.Empty;
-        public string CoverXl { get; set; } = String.Empty;
+        public string Cover_small { get; set; } = String.Empty;
+        public string Cover_medium { get; set; } = String.Empty;
+        public string Cover_big { get; set; } = String.Empty;
+        public string Cover_xl { get; set; } = String.Empty;
         public int Fans { get; set; }
+
     }
 
     public class DeezerGenreContainer

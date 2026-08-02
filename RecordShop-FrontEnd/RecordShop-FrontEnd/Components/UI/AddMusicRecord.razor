@@ -36,20 +36,20 @@
 	</div>	
 </div>
 
-@if (testAlbum != null)
+@if (album != null)
 {
     <div class="container" style="max-width: 260px;">
         <div class="card">
             <div class="card-image">
-                <img src="@testAlbum.CoverXl" alt="@testAlbum.Title"/>
+                <img src="@album.Cover_xl" alt="@album.Title"/>
             </div>
 
             <div class="card-content">
-                <p class="title is-6">@testAlbum.Title</p>
-                <p class="subtitle is-7">@testAlbum.Artist.Name</p>
+                <p class="title is-6">@album.Title</p>
+                <p class="subtitle is-7">@album.Artist.Name</p>
 
-                <p><strong>Genre:</strong> @testAlbum.Genres.Data.FirstOrDefault()?.Name</p>
-                <p><strong>Release Year:</strong> @testAlbum.Release_Date.Substring(0, 4)</p>
+                <p><strong>Genre:</strong> @album.Genres.Data.FirstOrDefault()?.Name</p>
+                <p><strong>Release Year:</strong> @album.Release_Date.Substring(0, 4)</p>
 
                 <div class="mt-4 has-text-centered">
                     <button class="button is-success is-small" @onclick="ConfirmAlbum">
@@ -82,10 +82,14 @@
             new DeezerGenre { Name = "Rock" }
         }
         },
-        Cover = "https://cdn-images.dzcdn.net/images/cover/2f1ec14d68a7a719526969cf8388e9c5/56x56-000000-80-0-0.jpg",
-        CoverBig = "https://cdn-images.dzcdn.net/images/cover/2f1ec14d68a7a719526969cf8388e9c5/56x56-000000-80-0-0.jpg",
-        CoverXl = "https://cdn-images.dzcdn.net/images/cover/2f1ec14d68a7a719526969cf8388e9c5/1000x1000-000000-80-0-0.jpg",
-        Fans = 50000
+       
+        Cover = "",
+        Cover_small = "",
+        Cover_medium = "",
+        Cover_big = "",
+        Cover_xl = "",
+        Fans = 5000
+
     };
 
 
