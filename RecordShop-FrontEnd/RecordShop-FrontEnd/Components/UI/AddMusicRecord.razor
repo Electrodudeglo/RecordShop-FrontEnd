@@ -73,31 +73,6 @@
 
 @code {
 
-	private DeezerAlbumDetails testAlbum = new DeezerAlbumDetails{
-        Id = 123456,
-        Title = "In Times New Roman...",
-        Artist = new DeezerArtist
-        {
-            Name = "Queens of the Stone Age"
-        },
-        Release_Date = "2023-06-16",
-        Genres = new DeezerGenreContainer
-        {
-            Data = new List<DeezerGenre>
-        {
-            new DeezerGenre { Name = "Rock" }
-        }
-        },
-
-        Cover = "",
-        Cover_small = "",
-        Cover_medium = "",
-        Cover_big = "",
-        Cover_xl = "",
-        Fans = 5000
-
-    };
-
 
 	private string _albumTitle = "";
 	public string AlbumTitle {
@@ -134,47 +109,66 @@
 
 	private async Task CallDeezer()
 	{
-
 		isloading = true;
 
+		// Normalize first
+		AlbumTitle = Regex.Replace(AlbumTitle.Trim(), @"\s+", " ");
+		ArtistName = Regex.Replace(ArtistName.Trim(), @"\s+", " ");
+
+		// Validate after normalization
 		if (string.IsNullOrWhiteSpace(AlbumTitle))
 		{
 			errorTitle = "Album Title Missing";
-			isloading = false;
+			ResetLoading();
 			return;
-
 		}
 
-		if(string.IsNullOrEmpty(ArtistName))
+		if (string.IsNullOrWhiteSpace(ArtistName))
 		{
 			errorArtist = "Artist Name Missing";
-			isloading = false;
+			ResetLoading();
 			return;
-
 		}
 
 		disableInput = true;
 
 		await Task.Delay(600);
 
-		AlbumTitle = Regex.Replace(AlbumTitle.Trim(), @"\s+", " ");
-		ArtistName = Regex.Replace(ArtistName.Trim(), @"\s+", " ");
+		DeezerAlbumDetails? deezerResult = null;
 
-		var deezerResult = await Deezer.FindAlbumSync(AlbumTitle,ArtistName);
-
-		if(album != null)
+		try
 		{
-			Console.WriteLine("Data is clean");
-
-			await OnCheckDatabase();
+			// This may throw HttpRequestException, JsonException, etc.
+			deezerResult = await Deezer.FindAlbumSync(AlbumTitle, ArtistName);
 		}
-
-		else
+		catch (Exception ex)
 		{
-			generalError = "Album does not exist, Maybe something is spelled wrong?";          
-			ResetLoading();            
+			generalError = "Could not reach Deezer. Please try again later.";
+			Console.WriteLine($"Deezer API error: {ex.Message}");
+			ResetLoading();
+			return;
 		}
+		// Deezer returned no album
+		if (deezerResult == null)
+		{
+			generalError = "Album does not exist. Maybe spelling could be wrong.";
+			ResetLoading();
+			return;
+		}
+		// Check database
+		var exists = await OnCheckDatabase();
+
+		if (!exists)
+		{
+			generalError = "Album already exists in database.";
+			ResetLoading();
+			return;
+		}
+		// Success
+		album = deezerResult;
 	}
+
+
 
 
 	private void ConfirmAlbum()
@@ -194,16 +188,16 @@
 	}
 
 
-	private async Task OnCheckDatabase()
+	private async Task<bool> OnCheckDatabase()
 	{
 		var databaseContent = await RecordService.GetAll();
-		foreach(var content in databaseContent)
-		{
-			if(content.RecordTitle == AlbumTitle)
-			{
-				generalError = "Record Already Exist";
-			}
-		}
+		if (databaseContent == null) return true;
+
+		var normalizedInput = AlbumTitle.Trim().ToLowerInvariant();
+
+		return !databaseContent.Any(x =>
+			x.RecordTitle?.Trim().ToLowerInvariant() == normalizedInput
+		);
 	}
 
 }
