@@ -28,14 +28,16 @@
             return true;     
         }
 
-        public async Task<bool> GetAll()
+        public async Task<List<MusicRecordModel>> GetAll()
         {
+            var result = await _http.GetFromJsonAsync<List<MusicRecordModel>>("api/v1/records") ?? null;
 
-            var result = await _http.GetAsync("api/v1/records");
+            if(result != null)
+            {
+                return result;
+            }
 
-            Console.WriteLine(result);
-
-            return true;
+            return new();             
         }
 
         public async Task<bool> AddOneRecord(MusicRecordModel record)

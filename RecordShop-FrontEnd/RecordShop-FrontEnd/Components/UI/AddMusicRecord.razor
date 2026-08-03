@@ -38,7 +38,7 @@
 		</div>
 
         <div>
-            <p class="has-text-danger">@apiError</p>
+            <p class="has-text-danger">@generalError</p>
         </div>
 	</div>	
 </div>
@@ -119,7 +119,7 @@
 		}
 	}
 
-	private string apiError = "";
+	private string generalError = "";
 
 
 	private string errorTitle = String.Empty;
@@ -160,7 +160,7 @@
 		AlbumTitle = Regex.Replace(AlbumTitle.Trim(), @"\s+", " ");
 		ArtistName = Regex.Replace(ArtistName.Trim(), @"\s+", " ");
 
-		album = await Deezer.FindAlbumSync(AlbumTitle,ArtistName);
+		var deezerResult = await Deezer.FindAlbumSync(AlbumTitle,ArtistName);
 
 		if(album != null)
 		{
@@ -171,7 +171,7 @@
 
 		else
 		{
-			apiError = "Album does not exist";           
+			generalError = "Album does not exist, Maybe something is spelled wrong?";          
 			ResetLoading();            
 		}
 	}
@@ -197,12 +197,14 @@
 	private async Task OnCheckDatabase()
 	{
 		var databaseContent = await RecordService.GetAll();
-
-		Console.WriteLine("From childcomponent");
-
+		foreach(var content in databaseContent)
+		{
+			if(content.RecordTitle == AlbumTitle)
+			{
+				generalError = "Record Already Exist";
+			}
+		}
 	}
-
-
 
 }
 
