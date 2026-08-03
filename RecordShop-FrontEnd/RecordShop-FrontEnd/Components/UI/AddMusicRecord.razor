@@ -1,4 +1,5 @@
 ﻿@using RecordShop_FrontEnd.Services
+@using System.Text.RegularExpressions;
 @rendermode InteractiveServer
 @inject AuthService Auth
 @inject DeezerService Deezer
@@ -71,7 +72,7 @@
 
 @code {
 
-    private DeezerAlbumDetails testAlbum = new DeezerAlbumDetails{
+	private DeezerAlbumDetails testAlbum = new DeezerAlbumDetails{
         Id = 123456,
         Title = "In Times New Roman...",
         Artist = new DeezerArtist
@@ -97,63 +98,66 @@
     };
 
 
-    private string _albumTitle = "";
-    public string AlbumTitle {
-        get => _albumTitle; 
-        set
-        {
-            _albumTitle = value;
-            if (!string.IsNullOrWhiteSpace(value)) errorTitle = "";
-        } 
-    }
+	private string _albumTitle = "";
+	public string AlbumTitle {
+		get => _albumTitle; 
+		set
+		{
+			_albumTitle = value;
+			if (!string.IsNullOrWhiteSpace(value)) errorTitle = "";
+		} 
+	}
 
-    private string _artistName = "";
-    public string ArtistName {
-        get => _artistName;
-        set
-        {
-            _artistName = value;
-            if (!string.IsNullOrWhiteSpace(value)) errorArtist = "";
-        }
-    }
+	private string _artistName = "";
+	public string ArtistName {
+		get => _artistName;
+		set
+		{
+			_artistName = value;
+			if (!string.IsNullOrWhiteSpace(value)) errorArtist = "";
+		}
+	}
 
-    private string apiError = "";
-
-
-    private string errorTitle = String.Empty;
-    private string errorArtist = String.Empty;
+	private string apiError = "";
 
 
+	private string errorTitle = String.Empty;
+	private string errorArtist = String.Empty;
 
-    private DeezerAlbumDetails? album;
 
-    private bool disableInput = false;
-    private bool isloading = false;
 
-    private async Task CallDeezer()
-    {
+	private DeezerAlbumDetails? album;
 
-        isloading = true;
+	private bool disableInput = false;
+	private bool isloading = false;
 
-        if (string.IsNullOrWhiteSpace(AlbumTitle))
-        {
-            errorTitle = "Album Title Missing";
-            isloading = false;
-            return;
+	private async Task CallDeezer()
+	{
 
-        }
+		isloading = true;
 
-        if(string.IsNullOrEmpty(ArtistName))
-        {
-            errorArtist = "Artist Name Missing";
-            isloading = false;
-            return;
+		if (string.IsNullOrWhiteSpace(AlbumTitle))
+		{
+			errorTitle = "Album Title Missing";
+			isloading = false;
+			return;
 
-        }
+		}
 
-        disableInput = true;
+		if(string.IsNullOrEmpty(ArtistName))
+		{
+			errorArtist = "Artist Name Missing";
+			isloading = false;
+			return;
 
-        await Task.Delay(600);
+		}
+
+		disableInput = true;
+
+		await Task.Delay(600);
+
+		AlbumTitle = Regex.Replace(AlbumTitle.Trim(), @"\s+", " ");
+		ArtistName = Regex.Replace(ArtistName.Trim(), @"\s+", " ");
 
         album = await Deezer.FindAlbumSync(AlbumTitle,ArtistName);
 
