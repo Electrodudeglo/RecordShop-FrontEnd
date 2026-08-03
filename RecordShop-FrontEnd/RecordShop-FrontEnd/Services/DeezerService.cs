@@ -15,17 +15,37 @@
 
         public async Task<DeezerAlbumDetails?> FindAlbumSync(string title, string artist)
         {
-            var query = HttpUtility.UrlEncode($"{title} {artist}");
-            var searchUrl = $"search/album?q={query}&limit=1";
+            try
+            {
+                var query = HttpUtility.UrlEncode($"{title} {artist}");
+                var searchUrl = $"search/album?q={query}&limit=1";
 
-            var searchResults = await _http.GetFromJsonAsync<DeezerSearchResult>(searchUrl);
+                var response = await _http.GetAsync(searchUrl);
 
-            if (searchResults?.Data == null || searchResults.Data.Count() == 0) return null;
+                if (!response.IsSuccessStatusCode)
+                    return null; // handles 404, 500, etc.
 
-            var albumId = searchResults.Data[0].Id;
+                var searchResults = await response.Content.ReadFromJsonAsync<DeezerSearchResult>();
 
-            return await _http.GetFromJsonAsync<DeezerAlbumDetails>($"album/{albumId}");
+                if (searchResults?.Data == null || searchResults.Data.Count == 0)
+                    return null;
+
+                var albumId = searchResults.Data[0].Id;
+
+                var albumResponse = await _http.GetAsync($"album/{albumId}");
+
+                if (!albumResponse.IsSuccessStatusCode)
+                    return null; // handles 404 on album lookup
+
+                return await albumResponse.Content.ReadFromJsonAsync<DeezerAlbumDetails>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Deezer error: {ex.Message}");
+                return null;
+            }
         }
+
     }
 
     public class DeezerSearchResult
