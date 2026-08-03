@@ -1,7 +1,9 @@
 ﻿namespace RecordShop_FrontEnd.Services
 {
     using System.Net.Http.Json;
+    using System.Text.Json;
     using System.Web;
+    using RecordShop_FrontEnd;
    
     
     public class DeezerService
@@ -12,45 +14,113 @@
             _http = http;
         }
 
-
-        public async Task<DeezerAlbumDetails?> FindAlbumSync(string title, string artist)
+        public async Task<DeezerAlbumResult?> FindAlbumSync(string title, string artist)
         {
             try
             {
+                // fuzzy album search
                 var query = HttpUtility.UrlEncode($"{title} {artist}");
                 var searchUrl = $"search/album?q={query}&limit=1";
 
                 var response = await _http.GetAsync(searchUrl);
 
                 if (!response.IsSuccessStatusCode)
-                    return null; // handles 404, 500, etc.
+                {
+                    var status = response.StatusCode switch
+                    {
+                        System.Net.HttpStatusCode.NotFound => DeezerResultStatusEnum.NotFound,
+                        System.Net.HttpStatusCode.BadRequest => DeezerResultStatusEnum.ServerError,
+                        System.Net.HttpStatusCode.InternalServerError => DeezerResultStatusEnum.ServerError,
+                        System.Net.HttpStatusCode.ServiceUnavailable => DeezerResultStatusEnum.ServerError,
+                        System.Net.HttpStatusCode.TooManyRequests => DeezerResultStatusEnum.ServerError,
+                        _ => DeezerResultStatusEnum.ServerError
+                    };
 
-                var searchResults = await response.Content.ReadFromJsonAsync<DeezerSearchResult>();
+                    return new DeezerAlbumResult { ResultStatus = status };
+                }
 
-                if (searchResults?.Data == null || searchResults.Data.Count == 0)
-                    return null;
+                var rawJson = await response.Content.ReadAsStringAsync();
 
-                var albumId = searchResults.Data[0].Id;
+                if(rawJson.Contains("\"error\""))
+                {
+                    var errorObj = JsonSerializer.Deserialize<DeezerErrorResponse>(rawJson);
+
+                    if(errorObj?.Error !=null)
+                    {
+                        return new DeezerAlbumResult
+                        {
+                            ResultStatus = DeezerResultStatusEnum.DeezerErrorPayload
+                        };
+                    }
+                }
+
+                DeezerSearchResult? deezerSearchResult = new();
+                try
+                {
+                    deezerSearchResult = await response.Content.ReadFromJsonAsync<DeezerSearchResult>();
+                }
+                catch
+                {
+                    return new DeezerAlbumResult{ ResultStatus = DeezerResultStatusEnum.InvalidJson };
+                }
+
+                if(deezerSearchResult?.Data == null || deezerSearchResult.Data.Count == 0)
+                {
+                    return new DeezerAlbumResult { ResultStatus = DeezerResultStatusEnum.NotFound };
+                }
+
+                // Search album by ID below
+
+                var albumId = deezerSearchResult.Data[0].Id;
 
                 var albumResponse = await _http.GetAsync($"album/{albumId}");
 
-                if (!albumResponse.IsSuccessStatusCode)
-                    return null; // handles 404 on album lookup
+                if(!albumResponse.IsSuccessStatusCode)
+                {
 
-                return await albumResponse.Content.ReadFromJsonAsync<DeezerAlbumDetails>();
+                    var status = albumResponse.StatusCode switch
+                    {
+                        System.Net.HttpStatusCode.NotFound => DeezerResultStatusEnum.NotFound,
+                        System.Net.HttpStatusCode.InternalServerError => DeezerResultStatusEnum.ServerError,
+                        System.Net.HttpStatusCode.ServiceUnavailable => DeezerResultStatusEnum.ServerError,
+                        System.Net.HttpStatusCode.TooManyRequests => DeezerResultStatusEnum.ServerError,
+                        _ => DeezerResultStatusEnum.ServerError
+                    };
+                    return new DeezerAlbumResult { ResultStatus = status };
+                }
+
+                DeezerAlbumDetails? album = new();
+
+                try
+                {
+                    album = await albumResponse.Content.ReadFromJsonAsync<DeezerAlbumDetails>();
+                }
+                catch
+                {
+                    return new DeezerAlbumResult { ResultStatus = DeezerResultStatusEnum.InvalidJson };
+                }
+
+                return new DeezerAlbumResult { ResultStatus = DeezerResultStatusEnum.Success, Album = album};
             }
-            catch (Exception ex)
+            
+            catch
             {
-                Console.WriteLine($"Deezer error: {ex.Message}");
-                return null;
+                return new DeezerAlbumResult { ResultStatus = DeezerResultStatusEnum.NetworkError };
             }
         }
+    }
 
+
+    public class DeezerAlbumResult
+    {
+        public DeezerResultStatusEnum ResultStatus { get; set; }
+        public DeezerAlbumDetails? Album { get; set; }
     }
 
     public class DeezerSearchResult
     {
         public List<DeezerAlbumSearchItem> Data { get; set; } = new();
+
     }
 
     public class DeezerAlbumSearchItem
@@ -83,6 +153,7 @@
         public string Cover_big { get; set; } = String.Empty;
         public string Cover_xl { get; set; } = String.Empty;
         public int Fans { get; set; }
+        public DeezerResultStatusEnum ResultStatus { get; set; }
 
     }
 
@@ -96,5 +167,16 @@
         public string Name { get; set; } = String.Empty;
     }
 
+    public class DeezerErrorResponse
+    {
+        public DeezerErrorDetail? Error { get; set; }
+    }
+
+    public class DeezerErrorDetail
+    {
+        public string Type { get; set; } = "";
+        public string Message { get; set; } = "";
+        public int Code { get; set; }
+    }
 
 }
