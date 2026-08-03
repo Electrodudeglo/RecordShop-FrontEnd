@@ -134,27 +134,35 @@
 
 		await Task.Delay(600);
 
-		DeezerAlbumDetails? deezerResult = null;
+		var deezerResult = await Deezer.FindAlbumSync(AlbumTitle,ArtistName);
 
-		try
+		switch (deezerResult?.ResultStatus)
 		{
-			// This may throw HttpRequestException, JsonException, etc.
-			deezerResult = await Deezer.FindAlbumSync(AlbumTitle, ArtistName);
+			case DeezerResultStatusEnum.Success:
+				break;
+
+			case DeezerResultStatusEnum.NotFound:
+				generalError = "Album does not exist. Maybe spelling could be wrong";
+				ResetLoading();
+				return;
+
+			case DeezerResultStatusEnum.ServerError:
+				generalError = "Issue with the website";
+				ResetLoading();
+				return;
+
+			case DeezerResultStatusEnum.NetworkError:
+				generalError = "Issue with the website";
+				ResetLoading();
+				return;
+
+			case DeezerResultStatusEnum.InvalidJson:
+				generalError = "Issue with the website";
+				ResetLoading();
+				return;
 		}
-		catch (Exception ex)
-		{
-			generalError = "Could not reach Deezer. Please try again later.";
-			Console.WriteLine($"Deezer API error: {ex.Message}");
-			ResetLoading();
-			return;
-		}
-		// Deezer returned no album
-		if (deezerResult == null)
-		{
-			generalError = "Album does not exist. Maybe spelling could be wrong.";
-			ResetLoading();
-			return;
-		}
+
+
 		// Check database
 		var exists = await OnCheckDatabase();
 
@@ -165,7 +173,7 @@
 			return;
 		}
 		// Success
-		album = deezerResult;
+		album = deezerResult?.Album;		
 	}
 
 
