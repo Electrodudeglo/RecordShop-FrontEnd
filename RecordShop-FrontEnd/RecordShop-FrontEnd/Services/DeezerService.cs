@@ -10,7 +10,6 @@
         public DeezerService(HttpClient http)
         {
             _http = http;
-            _http.BaseAddress = new Uri("https://api.deezer.com/");
         }
 
 

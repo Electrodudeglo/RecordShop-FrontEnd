@@ -1,8 +1,9 @@
 ﻿@using RecordShop_FrontEnd.Services
+@using RecordShop_FrontEnd.Models
 @using System.Text.RegularExpressions;
 @rendermode InteractiveServer
-@inject AuthService Auth
 @inject DeezerService Deezer
+@inject RecordService RecordService
 @inject NavigationManager Nav
 
 
@@ -159,36 +160,49 @@
 		AlbumTitle = Regex.Replace(AlbumTitle.Trim(), @"\s+", " ");
 		ArtistName = Regex.Replace(ArtistName.Trim(), @"\s+", " ");
 
-        album = await Deezer.FindAlbumSync(AlbumTitle,ArtistName);
+		album = await Deezer.FindAlbumSync(AlbumTitle,ArtistName);
 
-        if(album != null)
-        {
-            Console.WriteLine("Data is clean");
-        }
+		if(album != null)
+		{
+			Console.WriteLine("Data is clean");
 
-        else
-        {
-            apiError = "Album does not exist";           
-            ResetLoading();            
-        }
-    }
+			await OnCheckDatabase();
+		}
+
+		else
+		{
+			apiError = "Album does not exist";           
+			ResetLoading();            
+		}
+	}
 
 
-    private void ConfirmAlbum()
-    {
-        Console.WriteLine("Album confirmed!");
-    }
+	private void ConfirmAlbum()
+	{
+		Console.WriteLine("Album confirmed!");
+	}
 
-    private void RejectAlbum()
-    { 
-        Nav.NavigateTo("/records/add", forceLoad: true);
-    }
+	private void RejectAlbum()
+	{ 
+		Nav.NavigateTo("/records/add", forceLoad: true);
+	}
 
-    private void ResetLoading()
-    {
-        isloading = false;
-        disableInput = false;
-    }
+	private void ResetLoading()
+	{
+		isloading = false;
+		disableInput = false;
+	}
+
+
+	private async Task OnCheckDatabase()
+	{
+		var databaseContent = await RecordService.GetAll();
+
+		Console.WriteLine("From childcomponent");
+
+	}
+
+
 
 }
 

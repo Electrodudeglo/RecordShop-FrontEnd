@@ -28,11 +28,14 @@
             return true;     
         }
 
-        public async Task<List<MusicRecordModel>> GetAll()
+        public async Task<bool> GetAll()
         {
-            await AttachToken();
-            var result = await _http.GetFromJsonAsync<List<MusicRecordModel>>("ap/musicrecord");
-            return result ?? new List<MusicRecordModel>();
+
+            var result = await _http.GetAsync("api/v1/records");
+
+            Console.WriteLine(result);
+
+            return true;
         }
 
         public async Task<bool> AddOneRecord(MusicRecordModel record)
