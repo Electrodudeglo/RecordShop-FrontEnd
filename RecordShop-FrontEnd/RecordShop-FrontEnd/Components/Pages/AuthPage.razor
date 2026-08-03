@@ -1,5 +1,9 @@
 ﻿@page "/records/auth"
 @using RecordShop_FrontEnd.Components.UI
+@using RecordShop_FrontEnd.Services
+@using RecordShop_FrontEnd.Models
+@rendermode InteractiveServer
+@inject NavigationManager Nav
 
 
 <LoginComponent OnSubmit="HandleLogin"/>
@@ -8,10 +12,6 @@
 
 
 @code {
-@using RecordShop_FrontEnd.Services
-@using RecordShop_FrontEnd.Models
-@rendermode InteractiveServer
-@inject NavigationManager Nav
 
 	[Inject] private AuthService? Auth { get; set; } = null;
 
