@@ -19,9 +19,16 @@ builder.Services.AddScoped<RecordService>();
 //External API products
 builder.Services.AddScoped<DeezerService>();
 
-builder.Services.AddScoped(sp => new HttpClient
+// Backend API
+builder.Services.AddHttpClient<RecordService>(client =>
 {
-    BaseAddress = new Uri("http://localhost:5125/")
+    client.BaseAddress = new Uri("http://localhost:5125/");
+});
+
+// Deezer API
+builder.Services.AddHttpClient<DeezerService>(client =>
+{
+    client.BaseAddress = new Uri("https://api.deezer.com/");
 });
 
 var app = builder.Build();
