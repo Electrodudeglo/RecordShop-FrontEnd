@@ -1,9 +1,10 @@
 ﻿namespace RecordShop_FrontEnd.Services
 {
+    using RecordShop_FrontEnd;
     using System.Net.Http.Json;
     using System.Text.Json;
+    using System.Text.Json.Serialization;
     using System.Web;
-    using RecordShop_FrontEnd;
    
     
     public class DeezerService
@@ -41,11 +42,11 @@
 
                 var rawJson = await response.Content.ReadAsStringAsync();
 
-                if(rawJson.Contains("\"error\""))
+                if (rawJson.Contains("\"error\""))
                 {
                     var errorObj = JsonSerializer.Deserialize<DeezerErrorResponse>(rawJson);
 
-                    if(errorObj?.Error !=null)
+                    if (errorObj?.Error != null)
                     {
                         return new DeezerAlbumResult
                         {
@@ -89,6 +90,21 @@
                     return new DeezerAlbumResult { ResultStatus = status };
                 }
 
+                var albumRawJson = await albumResponse.Content.ReadAsStringAsync();
+
+                if (albumRawJson.Contains("\"error\""))
+                {
+                    var errorObj = JsonSerializer.Deserialize<DeezerErrorResponse>(albumRawJson);
+
+                    if (errorObj?.Error != null)
+                    {
+                        return new DeezerAlbumResult
+                        {
+                            ResultStatus = DeezerResultStatusEnum.DeezerErrorPayload
+                        };
+                    }
+                }
+    
                 DeezerAlbumDetails? album = new();
 
                 try
@@ -169,6 +185,7 @@
 
     public class DeezerErrorResponse
     {
+        [JsonPropertyName("error")]
         public DeezerErrorDetail? Error { get; set; }
     }
 
