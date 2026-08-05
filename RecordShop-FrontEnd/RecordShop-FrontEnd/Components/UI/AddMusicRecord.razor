@@ -160,8 +160,12 @@
 				generalError = "Issue with the website";
 				ResetLoading();
 				return;
-		}
 
+			case DeezerResultStatusEnum.DeezerErrorPayload:
+				generalError = "Issue with the website";
+				ResetLoading();
+				return;
+		}
 
 		// Check database
 		var exists = await OnCheckDatabase();
@@ -175,9 +179,6 @@
 		// Success
 		album = deezerResult?.Album;		
 	}
-
-
-
 
 	private void ConfirmAlbum()
 	{
