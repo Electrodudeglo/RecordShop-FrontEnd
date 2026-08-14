@@ -43,8 +43,6 @@ namespace RecordShop_FrontEnd.Services
                 Show("Debug toast", ToastEnum.Info, TimeSpan.FromSeconds(999));
             }
         }
-
-
         public void Clear()
         {
             _messages.Clear();

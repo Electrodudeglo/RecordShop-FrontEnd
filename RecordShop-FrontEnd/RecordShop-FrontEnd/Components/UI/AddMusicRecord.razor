@@ -37,7 +37,7 @@
 		</div>
 
         <div>
-            <p class="has-text-danger">@generalError</p>
+            <p class="has-text-danger">@generalError click here to view</p>
         </div>
 	</div>	
 </div>
@@ -166,7 +166,7 @@
 				return;
 
 			case DeezerResultStatusEnum.AlreadyExists:
-				generalError = "Album Already Exist";
+				generalError = "Album Already Exist in Database";
 				ResetLoading();
 				return;	
 
@@ -179,14 +179,6 @@
 		// Success
 		album = deezerResult.Album;
 	}
-
-	private async Task FindExistingAlbum()
-	{
-
-
-		
-	}
-
 
 	private void ConfirmAlbum()
 	{
