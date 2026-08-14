@@ -9,7 +9,7 @@ namespace RecordShop_FrontEnd.Models
         ServerError,
         NetworkError,
         InvalidJson,
-        DeezerErrorPayload,
+        AlreadyExists,
         AuthError
     }
 
