@@ -16,6 +16,18 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<RecordService>();
 
 
+// Backend API
+builder.Services.AddHttpClient<RecordService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5125/");
+});
+
+// Auth API
+builder.Services.AddHttpClient<AuthService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5125/");
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
