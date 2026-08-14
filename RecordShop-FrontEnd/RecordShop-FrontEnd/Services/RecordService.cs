@@ -16,7 +16,6 @@
         public RecordService(HttpClient http, AuthService auth, IToastService toastService)
         {
             _http = http;
-            _http.BaseAddress = new Uri("http://localhost:5125/");
             _auth = auth;
             _toast = toastService;
         }
@@ -47,7 +46,7 @@
         {
             if (!await AttachToken()) return new DeezerAlbumResult { ResultStatus = DeezerResultStatusEnum.AuthError, Album = null};
             var response = await _http.PostAsJsonAsync("api/v1/records/check-deezer",request);
-
+            
             if(!response.IsSuccessStatusCode)
             {
                 return new DeezerAlbumResult { ResultStatus = DeezerResultStatusEnum.ServerError, Album = null };
