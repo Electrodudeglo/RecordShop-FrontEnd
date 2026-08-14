@@ -16,6 +16,7 @@ namespace RecordShop_FrontEnd.Services
         public AuthService(HttpClient http, IJSRuntime js, IToastService toast)
         {
             _http = http;
+            _http.BaseAddress = new Uri("http://localhost:5125/");
             _js = js;
             _toast = toast;
         }
