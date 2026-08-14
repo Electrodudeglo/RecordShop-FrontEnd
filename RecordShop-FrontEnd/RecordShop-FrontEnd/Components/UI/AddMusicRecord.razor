@@ -2,7 +2,6 @@
 @using RecordShop_FrontEnd.Models
 @using System.Text.RegularExpressions;
 @rendermode InteractiveServer
-@inject DeezerService Deezer
 @inject RecordService RecordService
 @inject NavigationManager Nav
 
@@ -73,19 +72,20 @@
 
 @code {
 
-
 	private string _albumTitle = "";
-	public string AlbumTitle {
-		get => _albumTitle; 
+	public string AlbumTitle
+	{
+		get => _albumTitle;
 		set
 		{
 			_albumTitle = value;
 			if (!string.IsNullOrWhiteSpace(value)) errorTitle = "";
-		} 
+		}
 	}
 
 	private string _artistName = "";
-	public string ArtistName {
+	public string ArtistName
+	{
 		get => _artistName;
 		set
 		{
@@ -96,10 +96,8 @@
 
 	private string generalError = "";
 
-
 	private string errorTitle = String.Empty;
 	private string errorArtist = String.Empty;
-
 
 
 	private DeezerAlbumDetails? album;
@@ -107,8 +105,10 @@
 	private bool disableInput = false;
 	private bool isloading = false;
 
+
 	private async Task CallDeezer()
 	{
+
 		isloading = true;
 
 		// Normalize first
@@ -134,9 +134,13 @@
 
 		await Task.Delay(600);
 
-		var deezerResult = await Deezer.FindAlbumSync(AlbumTitle,ArtistName);
+		DeezerCheckRequest checkRequest = new DeezerCheckRequest { AlbumName = AlbumTitle, ArtistName = ArtistName };
 
-		switch (deezerResult?.ResultStatus)
+		var deezerResult = await RecordService.CheckDeezer(checkRequest);
+
+		Console.WriteLine(deezerResult.ResultStatus);
+
+		switch (deezerResult.ResultStatus)
 		{
 			case DeezerResultStatusEnum.Success:
 				break;
@@ -161,24 +165,28 @@
 				ResetLoading();
 				return;
 
-			case DeezerResultStatusEnum.DeezerErrorPayload:
-				generalError = "Issue with the website";
+			case DeezerResultStatusEnum.AlreadyExists:
+				generalError = "Album Already Exist";
+				ResetLoading();
+				return;	
+
+			case DeezerResultStatusEnum.AuthError:
+				generalError = "Authentication issue. Contact Admin";
 				ResetLoading();
 				return;
 		}
 
-		// Check database
-		var exists = await OnCheckDatabase();
-
-		if (!exists)
-		{
-			generalError = "Album already exists in database.";
-			ResetLoading();
-			return;
-		}
 		// Success
-		album = deezerResult?.Album;		
+		album = deezerResult.Album;
 	}
+
+	private async Task FindExistingAlbum()
+	{
+
+
+		
+	}
+
 
 	private void ConfirmAlbum()
 	{
@@ -186,7 +194,7 @@
 	}
 
 	private void RejectAlbum()
-	{ 
+	{
 		Nav.NavigateTo("/records/add", forceLoad: true);
 	}
 
@@ -195,19 +203,6 @@
 		isloading = false;
 		disableInput = false;
 	}
-
-
-	private async Task<bool> OnCheckDatabase()
-	{
-		var databaseContent = await RecordService.GetAll();
-		if (databaseContent == null) return true;
-
-		var normalizedInput = AlbumTitle.Trim().ToLowerInvariant();
-
-		return !databaseContent.Any(x =>
-			x.RecordTitle?.Trim().ToLowerInvariant() == normalizedInput
-		);
-	}
-
+	
 }
 
