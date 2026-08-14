@@ -1,31 +1,200 @@
-﻿<div class="container box mt-5" style="max-width: 420px">
+﻿@using RecordShop_FrontEnd.Services
+@using RecordShop_FrontEnd.Models
+@using System.Text.RegularExpressions;
+@rendermode InteractiveServer
+@inject RecordService RecordService
+@inject NavigationManager Nav
+
+
+<div class="container box mt-5" style="max-width: 420px">
 	<div class="has-text-centered">		
-		<div class="mb-3">
-			<p> Add Album Title</p>
-		</div>	
-			<div class="mb-4">
-				<InputText class="input has-text-centered" @bind-Value="AlbumTitle"/>
+		
+		<fieldset disabled="@(disableInput)">
+			<div class="mb-3">
+				<p> Add Album Title</p>
 			</div>
-		<div class="mb-3">
-			<p> Add Artist Name</p>
-		</div>
-		<div class="mb-4">
-			<InputText class="input has-text-centered" @bind-Value="ArtistName" />
-		</div>
-		<div class="mb-5">
-			
-			<button class="button is-primary">
+			<div class="mb-4">
+				<input class="input has-text-centered" @bind-Value="AlbumTitle" @bind-Value:event="oninput" />
+				<div class="">
+					<p class="has-text-danger">@errorTitle</p>
+				</div>
+			</div>
+			<div class="mb-3">
+				<p> Add Artist Name</p>
+			</div>
+			<div class="mb-4">
+				<input class="input has-text-centered" @bind-Value="ArtistName" @bind-Value:event="oninput" />
+				<div class="">
+					<p class="has-text-danger">@errorArtist</p>
+				</div>
+			</div>
+		</fieldset>
+		
+		<div class="mb-5">	
+			<button class="button is-primary @(isloading ? "is-loading" :"")" @onclick="CallDeezer" disabled="@(isloading)">
 				Submit
 			</button>
 		</div>
-	</div>
+
+        <div>
+            <p class="has-text-danger">@generalError click here to view</p>
+        </div>
+	</div>	
 </div>
+
+@if (album != null)
+{
+    <div class="container" style="max-width: 260px;">
+        <div class="card">
+            <div class="card-image">
+                <img src="@album.Cover_xl" alt="@album.Title"/>
+            </div>
+
+            <div class="card-content">
+                <p class="title is-6">@album.Title</p>
+                <p class="subtitle is-7">@album.Artist.Name</p>
+
+                <p><strong>Genre:</strong> @album.Genres.Data.FirstOrDefault()?.Name</p>
+                <p><strong>Release Year:</strong> @album.Release_Date.Substring(0, 4)</p>
+
+                <div class="mt-4 has-text-centered">
+                    <button class="button is-success is-small" @onclick="ConfirmAlbum">
+                        Confirm Album
+                    </button>
+                    <button class="button is-danger is-small ml-2" @onclick="RejectAlbum">
+                        Not Correct
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @code {
 
-	public string AlbumTitle { get; set; } = String.Empty;
-	public string ArtistName { get; set; } = String.Empty;
+	private string _albumTitle = "";
+	public string AlbumTitle
+	{
+		get => _albumTitle;
+		set
+		{
+			_albumTitle = value;
+			if (!string.IsNullOrWhiteSpace(value)) errorTitle = "";
+		}
+	}
+
+	private string _artistName = "";
+	public string ArtistName
+	{
+		get => _artistName;
+		set
+		{
+			_artistName = value;
+			if (!string.IsNullOrWhiteSpace(value)) errorArtist = "";
+		}
+	}
+
+	private string generalError = "";
+
+	private string errorTitle = String.Empty;
+	private string errorArtist = String.Empty;
 
 
+	private DeezerAlbumDetails? album;
 
+	private bool disableInput = false;
+	private bool isloading = false;
+
+
+	private async Task CallDeezer()
+	{
+
+		isloading = true;
+
+		// Normalize first
+		AlbumTitle = Regex.Replace(AlbumTitle.Trim(), @"\s+", " ");
+		ArtistName = Regex.Replace(ArtistName.Trim(), @"\s+", " ");
+
+		// Validate after normalization
+		if (string.IsNullOrWhiteSpace(AlbumTitle))
+		{
+			errorTitle = "Album Title Missing";
+			ResetLoading();
+			return;
+		}
+
+		if (string.IsNullOrWhiteSpace(ArtistName))
+		{
+			errorArtist = "Artist Name Missing";
+			ResetLoading();
+			return;
+		}
+
+		disableInput = true;
+
+		await Task.Delay(600);
+
+		DeezerCheckRequest checkRequest = new DeezerCheckRequest { AlbumName = AlbumTitle, ArtistName = ArtistName };
+
+		var deezerResult = await RecordService.CheckDeezer(checkRequest);
+
+		Console.WriteLine(deezerResult.ResultStatus);
+
+		switch (deezerResult.ResultStatus)
+		{
+			case DeezerResultStatusEnum.Success:
+				break;
+
+			case DeezerResultStatusEnum.NotFound:
+				generalError = "Album does not exist. Maybe spelling could be wrong";
+				ResetLoading();
+				return;
+
+			case DeezerResultStatusEnum.ServerError:
+				generalError = "Issue with the website";
+				ResetLoading();
+				return;
+
+			case DeezerResultStatusEnum.NetworkError:
+				generalError = "Issue with the website";
+				ResetLoading();
+				return;
+
+			case DeezerResultStatusEnum.InvalidJson:
+				generalError = "Issue with the website";
+				ResetLoading();
+				return;
+
+			case DeezerResultStatusEnum.AlreadyExists:
+				generalError = "Album Already Exist in Database";
+				ResetLoading();
+				return;	
+
+			case DeezerResultStatusEnum.AuthError:
+				generalError = "Authentication issue. Contact Admin";
+				ResetLoading();
+				return;
+		}
+
+		// Success
+		album = deezerResult.Album;
+	}
+
+	private void ConfirmAlbum()
+	{
+		Console.WriteLine("Album confirmed!");
+	}
+
+	private void RejectAlbum()
+	{
+		Nav.NavigateTo("/records/add", forceLoad: true);
+	}
+
+	private void ResetLoading()
+	{
+		isloading = false;
+		disableInput = false;
+	}
+	
 }
+

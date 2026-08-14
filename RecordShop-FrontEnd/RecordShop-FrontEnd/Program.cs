@@ -11,14 +11,21 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddSingleton<IToastService, ToastService>();
 
-// Authentication products
+// Custom Class Injections
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<RecordService>();
 
-builder.Services.AddScoped(sp => new HttpClient
-{
-    BaseAddress = new Uri("http://localhost:5125/")
 
+// Backend API
+builder.Services.AddHttpClient<RecordService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5125/");
+});
+
+// Auth API
+builder.Services.AddHttpClient<AuthService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5125/");
 });
 
 var app = builder.Build();

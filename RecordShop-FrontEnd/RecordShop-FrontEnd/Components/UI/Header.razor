@@ -93,5 +93,6 @@
     {
         await Auth.Logout();
         IsLoggedIn = false;
-	}
+        Nav.NavigateTo("/", forceLoad: true);
+    }
 }
