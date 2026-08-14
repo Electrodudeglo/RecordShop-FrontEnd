@@ -4,6 +4,8 @@
     using RecordShop_FrontEnd.Models;
     using System.Net.Http.Headers;
     using System.Net.Http.Json;
+    using System.Reflection.Metadata.Ecma335;
+
     public class RecordService
 {
 
@@ -14,6 +16,7 @@
         public RecordService(HttpClient http, AuthService auth, IToastService toastService)
         {
             _http = http;
+            _http.BaseAddress = new Uri("http://localhost:5125/");
             _auth = auth;
             _toast = toastService;
         }
@@ -40,6 +43,25 @@
             return new();             
         }
 
+        public async Task<DeezerAlbumResult> CheckDeezer(DeezerCheckRequest request)
+        {
+            if (!await AttachToken()) return new DeezerAlbumResult { ResultStatus = DeezerResultStatusEnum.AuthError, Album = null};
+            var response = await _http.PostAsJsonAsync("api/v1/records/check-deezer",request);
+
+            if(!response.IsSuccessStatusCode)
+            {
+                return new DeezerAlbumResult { ResultStatus = DeezerResultStatusEnum.ServerError, Album = null };
+            }
+
+            var result = await response.Content.ReadFromJsonAsync<DeezerAlbumResult>();
+
+            return result ?? new DeezerAlbumResult
+            {
+                ResultStatus = DeezerResultStatusEnum.InvalidJson,
+                Album = null
+            }; 
+        }
+ 
         public async Task<bool> AddOneRecord(MusicRecordModel record)
         {
             if (!await AttachToken()) return false;
