@@ -6,6 +6,16 @@
 @inject NavigationManager Nav
 
 
+@if (DeezerEnum == DeezerResultStatusEnum.AlreadyExists && showExistingAlbum)
+{
+	<div class="notification is-primary mt-1">
+		<button class="delete" @onclick="RemoveExistingAlbumMsg"></button>
+		<div class="has-text-centered">
+			The Album already exists. To view the album click <a href="@($"/records/view/{albumId}")">HERE</a>.
+		</div>
+	</div>
+}
+
 <div class="container box mt-5" style="max-width: 420px">
 	<div class="has-text-centered">		
 		
@@ -37,7 +47,7 @@
 		</div>
 
         <div>
-            <p class="has-text-danger">@generalError click here to view</p>
+            <p class="has-text-danger">@generalError</p>
         </div>
 	</div>	
 </div>
@@ -101,9 +111,12 @@
 
 
 	private DeezerAlbumDetails? album;
+	private long? albumId;
+	private DeezerResultStatusEnum DeezerEnum;
 
 	private bool disableInput = false;
 	private bool isloading = false;
+	private bool showExistingAlbum = false;
 
 
 	private async Task CallDeezer()
@@ -138,8 +151,6 @@
 
 		var deezerResult = await RecordService.CheckDeezer(checkRequest);
 
-		Console.WriteLine(deezerResult.ResultStatus);
-
 		switch (deezerResult.ResultStatus)
 		{
 			case DeezerResultStatusEnum.Success:
@@ -166,7 +177,9 @@
 				return;
 
 			case DeezerResultStatusEnum.AlreadyExists:
-				generalError = "Album Already Exist in Database";
+				albumId = deezerResult.Album?.Id;
+				DeezerEnum = deezerResult.ResultStatus;
+				showExistingAlbum = true;
 				ResetLoading();
 				return;	
 
@@ -195,6 +208,12 @@
 		isloading = false;
 		disableInput = false;
 	}
-	
+
+	private void RemoveExistingAlbumMsg()
+	{
+		showExistingAlbum = false;
+		StateHasChanged();
+	}
+
 }
 
