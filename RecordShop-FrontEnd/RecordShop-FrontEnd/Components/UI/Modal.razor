@@ -6,16 +6,16 @@
         <div class="box">
             <div class="content has-text-centered mb-5">
                 <p class="title is-5 has-text-danger">
-                    Are you sure you want to delete this item?
+                    @Title
                 </p>
                 <p class="subtitle is-6">
-                    This action cannot be undone.
+                    @Message
                 </p>
             </div>
 
             <div class="buttons is-centered">
-                <button class="button is-danger" @onclick="ConfirmDelete">
-                    Delete
+                <button class="button is-danger" @onclick="">
+                    @ConfirmButtonText
                 </button>
 
                 <button class="button is-light" @onclick="Close">
@@ -33,11 +33,19 @@
 
 @code {
 
-    [Parameter]
-    public EventCallback<MusicRecordModel> Record { get; set; }
+
+    [Parameter] 
+    public string Title { get; set; } = "Are you sure?";
+
+    [Parameter] 
+    public string Message { get; set; } = "Please confirm this action.";
+
+    [Parameter] 
+    public string ConfirmButtonText { get; set; } = "Confirm";
+
 
     [Parameter]
-    public EventCallback OnConfirmDelete { get; set; }
+    public EventCallback OnConfirm { get; set; }
 
     [Parameter]
     public EventCallback OnClose { get; set; }
@@ -48,10 +56,12 @@
         await OnClose.InvokeAsync();
     }
 
-    private async Task ConfirmDelete()
+    private async Task Confirm()
     {
-        await OnConfirmDelete.InvokeAsync();
+        await OnConfirm.InvokeAsync();
     }
+
+    
 
 
 }
