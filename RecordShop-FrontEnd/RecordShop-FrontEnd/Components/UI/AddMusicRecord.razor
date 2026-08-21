@@ -127,7 +127,7 @@
     private bool isloading = false;
     private bool showExistingAlbum = false;
 
-    private bool showModal = true;
+    private bool showModal = false;
 
 
     private async Task CallDeezer()
@@ -236,6 +236,7 @@
 	private void HandleClose()
 	{
 		showModal = false;
+        Nav.NavigateTo("/records/add", forceLoad: true);
 	}
 
 }
