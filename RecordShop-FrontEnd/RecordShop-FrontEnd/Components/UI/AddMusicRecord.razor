@@ -17,7 +17,7 @@
 }
 
 <div class="container box mt-5" style="max-width: 420px">
-	<div class="has-text-centered">		
+	<div class="has-text-centered">
 		
 		<fieldset disabled="@(disableInput)">
 			<div class="mb-3">
@@ -80,122 +80,157 @@
     </div>
 }
 
+@if(showModal)
+{
+    <Modal
+    Title="Do you want to save the album?"
+    OnClose="HandleClose" 
+    OnConfirm="ConfirmSave" />
+}
+
+
 @code {
 
-	private string _albumTitle = "";
-	public string AlbumTitle
-	{
-		get => _albumTitle;
-		set
-		{
-			_albumTitle = value;
-			if (!string.IsNullOrWhiteSpace(value)) errorTitle = "";
-		}
-	}
+    private string _albumTitle = "";
+    public string AlbumTitle
+    {
+        get => _albumTitle;
+        set
+        {
+            _albumTitle = value;
+            if (!string.IsNullOrWhiteSpace(value)) errorTitle = "";
+        }
+    }
 
-	private string _artistName = "";
-	public string ArtistName
-	{
-		get => _artistName;
-		set
-		{
-			_artistName = value;
-			if (!string.IsNullOrWhiteSpace(value)) errorArtist = "";
-		}
-	}
+    private string _artistName = "";
+    public string ArtistName
+    {
+        get => _artistName;
+        set
+        {
+            _artistName = value;
+            if (!string.IsNullOrWhiteSpace(value)) errorArtist = "";
+        }
+    }
 
-	private string generalError = "";
+    private string generalError = "";
 
-	private string errorTitle = String.Empty;
-	private string errorArtist = String.Empty;
-
-
-	private DeezerAlbumDetails? album;
-	private long? albumId;
-	private DeezerResultStatusEnum DeezerEnum;
-
-	private bool disableInput = false;
-	private bool isloading = false;
-	private bool showExistingAlbum = false;
+    private string errorTitle = String.Empty;
+    private string errorArtist = String.Empty;
 
 
-	private async Task CallDeezer()
-	{
+    private DeezerAlbumDetails? album;
+    private long? albumId;
+    private DeezerResultStatusEnum DeezerEnum;
 
-		isloading = true;
+    private bool disableInput = false;
+    private bool isloading = false;
+    private bool showExistingAlbum = false;
 
-		// Normalize first
-		AlbumTitle = Regex.Replace(AlbumTitle.Trim(), @"\s+", " ");
-		ArtistName = Regex.Replace(ArtistName.Trim(), @"\s+", " ");
+    private bool showModal = false;
 
-		// Validate after normalization
-		if (string.IsNullOrWhiteSpace(AlbumTitle))
-		{
-			errorTitle = "Album Title Missing";
-			ResetLoading();
-			return;
-		}
 
-		if (string.IsNullOrWhiteSpace(ArtistName))
-		{
-			errorArtist = "Artist Name Missing";
-			ResetLoading();
-			return;
-		}
+    private async Task CallDeezer()
+    {
 
-		disableInput = true;
+        isloading = true;
 
-		await Task.Delay(600);
+        // Normalize first
+        AlbumTitle = Regex.Replace(AlbumTitle.Trim(), @"\s+", " ");
+        ArtistName = Regex.Replace(ArtistName.Trim(), @"\s+", " ");
 
-		DeezerCheckRequest checkRequest = new DeezerCheckRequest { AlbumName = AlbumTitle, ArtistName = ArtistName };
+        // Validate after normalization
+        if (string.IsNullOrWhiteSpace(AlbumTitle))
+        {
+            errorTitle = "Album Title Missing";
+            ResetLoading();
+            return;
+        }
 
-		var deezerResult = await RecordService.CheckDeezer(checkRequest);
+        if (string.IsNullOrWhiteSpace(ArtistName))
+        {
+            errorArtist = "Artist Name Missing";
+            ResetLoading();
+            return;
+        }
 
-		switch (deezerResult.ResultStatus)
-		{
-			case DeezerResultStatusEnum.Success:
-				break;
+        disableInput = true;
 
-			case DeezerResultStatusEnum.NotFound:
-				generalError = "Album does not exist. Maybe spelling could be wrong";
-				ResetLoading();
-				return;
+        await Task.Delay(600);
 
-			case DeezerResultStatusEnum.ServerError:
-				generalError = "Issue with the website";
-				ResetLoading();
-				return;
+        DeezerCheckRequest checkRequest = new DeezerCheckRequest { AlbumName = AlbumTitle, ArtistName = ArtistName };
 
-			case DeezerResultStatusEnum.NetworkError:
-				generalError = "Issue with the website";
-				ResetLoading();
-				return;
+        var deezerResult = await RecordService.CheckDeezer(checkRequest);
 
-			case DeezerResultStatusEnum.InvalidJson:
-				generalError = "Issue with the website";
-				ResetLoading();
-				return;
+        switch (deezerResult.ResultStatus)
+        {
+            case DeezerResultStatusEnum.Success:
+                break;
 
-			case DeezerResultStatusEnum.AlreadyExists:
-				albumId = deezerResult.Album?.Id;
-				DeezerEnum = deezerResult.ResultStatus;
-				showExistingAlbum = true;
-				ResetLoading();
-				return;	
+            case DeezerResultStatusEnum.NotFound:
+                generalError = "Album does not exist. Maybe spelling could be wrong";
+                ResetLoading();
+                return;
 
-			case DeezerResultStatusEnum.AuthError:
-				generalError = "Authentication issue. Contact Admin";
-				ResetLoading();
-				return;
-		}
+            case DeezerResultStatusEnum.ServerError:
+                generalError = "Issue with the website";
+                ResetLoading();
+                return;
 
-		// Success
-		album = deezerResult.Album;
-	}
+            case DeezerResultStatusEnum.NetworkError:
+                generalError = "Issue with the website";
+                ResetLoading();
+                return;
 
-	private void ConfirmAlbum()
-	{
-		Console.WriteLine("Album confirmed!");
+            case DeezerResultStatusEnum.InvalidJson:
+                generalError = "Issue with the website";
+                ResetLoading();
+                return;
+
+            case DeezerResultStatusEnum.AlreadyExists:
+                albumId = deezerResult.Album?.Id;
+                DeezerEnum = deezerResult.ResultStatus;
+                showExistingAlbum = true;
+                ResetLoading();
+                return;	
+
+            case DeezerResultStatusEnum.AuthError:
+                generalError = "Authentication issue. Contact Admin";
+                ResetLoading();
+                return;
+        }
+
+        // Success
+        album = deezerResult.Album;
+    }
+
+    private void ConfirmAlbum()
+    {
+        showModal = true;
+    }
+
+    private async Task ConfirmSave()
+    {
+
+        MusicRecordModel convertedAlbum = new MusicRecordModel 
+        {
+           RecordTitle = album.Title,
+           Artists = album.Artist.Name,
+           ReleaseYear = album.Release_Date,
+           Genre = album.Genres.Data.FirstOrDefault()?.Name,
+           Stock = album.Fans,
+           Cover = album.Cover_xl                    
+        };
+        var success = await RecordService.AddOneRecord(convertedAlbum);
+
+        if(success)
+        {
+            var getAllRecords = await RecordService.GetAll();
+            var albumId = getAllRecords.Last().Id;
+
+            Nav.NavigateTo($"/records/view/{albumId}");
+            showModal = false;
+        }
 	}
 
 	private void RejectAlbum()
@@ -213,6 +248,12 @@
 	{
 		showExistingAlbum = false;
 		StateHasChanged();
+	}
+
+	private void HandleClose()
+	{
+		showModal = false;
+        Nav.NavigateTo("/records/add", forceLoad: true);
 	}
 
 }

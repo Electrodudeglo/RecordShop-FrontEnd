@@ -45,7 +45,11 @@
 
 @if (_showModal)
 {
-    <Modal OnClose="HandleClose" OnConfirmDelete="ConfirmDelete" />
+    <Modal 
+     OnClose="HandleClose" 
+     OnConfirm="ConfirmDelete"
+     Title="Are you sure you want to delete it?"  
+     />
 }
 
 @code {
