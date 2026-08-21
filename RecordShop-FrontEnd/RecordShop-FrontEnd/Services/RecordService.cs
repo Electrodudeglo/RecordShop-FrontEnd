@@ -33,13 +33,11 @@
         public async Task<List<MusicRecordModel>> GetAll()
         {
             var result = await _http.GetFromJsonAsync<List<MusicRecordModel>>("api/v1/records") ?? null;
-
             if(result != null)
             {
                 return result;
             }
-
-            return new();             
+            return new();         
         }
 
         public async Task<DeezerAlbumResult> CheckDeezer(DeezerCheckRequest request)
@@ -64,8 +62,13 @@
         public async Task<bool> AddOneRecord(MusicRecordModel record)
         {
             if (!await AttachToken()) return false;
-            var response = await _http.PostAsJsonAsync("api/musicrecord", record);
-            return response.IsSuccessStatusCode;
+            var response = await _http.PostAsJsonAsync("api/v1/records", record);
+
+            if(response.IsSuccessStatusCode)
+            {
+                _toast.Show("Record Added", ToastEnum.Success);     
+            }
+            return true;
         }
 
         public async Task<bool> UpdateRecord(int id, MusicRecordModel record)

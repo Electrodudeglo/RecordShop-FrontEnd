@@ -17,7 +17,7 @@
 }
 
 <div class="container box mt-5" style="max-width: 420px">
-	<div class="has-text-centered">		
+	<div class="has-text-centered">
 		
 		<fieldset disabled="@(disableInput)">
 			<div class="mb-3">
@@ -212,8 +212,25 @@
     private async Task ConfirmSave()
     {
 
-        
+        MusicRecordModel convertedAlbum = new MusicRecordModel 
+        {
+           RecordTitle = album.Title,
+           Artists = album.Artist.Name,
+           ReleaseYear = album.Release_Date,
+           Genre = album.Genres.Data.FirstOrDefault()?.Name,
+           Stock = album.Fans,
+           Cover = album.Cover_xl                    
+        };
+        var success = await RecordService.AddOneRecord(convertedAlbum);
 
+        if(success)
+        {
+            var getAllRecords = await RecordService.GetAll();
+            var albumId = getAllRecords.Last().Id;
+
+            Nav.NavigateTo($"/records/view/{albumId}");
+            showModal = false;
+        }
 	}
 
 	private void RejectAlbum()
