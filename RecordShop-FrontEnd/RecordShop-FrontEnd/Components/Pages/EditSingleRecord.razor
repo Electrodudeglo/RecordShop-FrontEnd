@@ -65,7 +65,7 @@ else
 			var success = await recordService.UpdateRecord(Id,updateRecord);
 			if(success)
 			{
-				Nav.NavigateTo("/");
+				Nav.NavigateTo($"/records/view/{Model.Id}");
 			}
 		}
 		catch(Exception e)
