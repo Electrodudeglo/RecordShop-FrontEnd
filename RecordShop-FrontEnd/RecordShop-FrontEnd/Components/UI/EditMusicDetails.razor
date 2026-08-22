@@ -1,62 +1,101 @@
-﻿<div class="box">
+﻿@using RecordShop_FrontEnd.Models
+<div class="box p-6">
+    <div class="has-text-centered">
 
-	<div class="has-text-centered">
-		<div class="mb-4">
-			<img src=@musicRecord.Cover alt="Alternate Text" height="200" width="200" />
-		</div>
-		<div class="mb-3">
-			<p>Update Album Title</p>
-		</div>
-		<div class="mb-4">
-			<InputText class="input has-text-centered" @bind-Value="musicRecord.RecordTitle" />
-		</div>
-		<div class="mb-3">
-			<p>Update Artist Name</p>
-		</div>
-		<div class="mb-4">
-			<InputText class="input has-text-centered" @bind-Value="musicRecord.Artists"/>
-		</div>
-		<div class="mb-3">
-			<p>Update Genre</p>
-		</div>
-		<div class="mb-4">
-			<InputText class="input has-text-centered" @bind-Value="musicRecord.Genre"/>
-		</div>
-		<div class="mb-3">
-			<p>Update Year Released</p>
-		</div>
-		<div class="mb-4">
-			<InputText class="input has-text-centered" @bind-Value="musicRecord.ReleaseYear" />
-		</div>
-		<div class="mb-3">
-			<p>stock?</p>
-		</div>
-		<div class="mb-4">
-			<InputNumber class="input has-text-centered" @bind-Value="musicRecord.Stock"/>
-		</div>
+        <div class="mb-5">
+            <img src="@musicRecord.Cover"
+                 alt="Album Cover"
+                 class="album-cover"
+                 style="border-radius: 10px; box-shadow: 0 6px 18px rgba(0,0,0,0.15); max-width: 350px;" />
+        </div>
 
-		<div>
-			<button class="button" @onclick="SaveRecord">Update</button>
-		</div>
-	</div>
+        <p class="is-size-3 has-text-weight-semibold">
+            @musicRecord.RecordTitle
+        </p>
+
+        <p class="is-size-5">@musicRecord.Artists</p>
+
+        <p class="tag is-info is-light mt-3">
+            Released: @musicRecord.ReleaseYear
+        </p>
+
+        <p class="tag is-success is-light mt-2">
+            Current Stock: @musicRecord.Stock
+        </p>
+
+        <div class="container mb-5 mt-5" style="max-width: 200px">
+            <InputNumber class="input has-text-centered"
+                         @bind-Value="stockInput"
+                         @oninput="ValidateStock" />
+
+           <p>Please update the stock</p>
+
+            <p class="has-text-danger">@errorStock</p>
+        </div>
+
+        <button class="button is-primary"
+                disabled="@isInvalid"
+                @onclick="SaveRecord">
+            Update Stock
+        </button>
+    </div>
 </div>
 
-
 @code {
+    [Parameter]
+    public MusicRecordModel musicRecord { get; set; } = new();
 
-@using RecordShop_FrontEnd.Models
+    [Parameter]
+    public EventCallback<MusicRecordModel> OnSave { get; set; }
+
+    private string errorStock = "";
+    private bool isInvalid = true;
+    private int? stockInput;
 
 
-	[Parameter]
-	public MusicRecordModel musicRecord { get; set; } = new();
+    // Validation triggered on every keystroke
+    private void ValidateStock(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString();
 
-	[Parameter]
-	public EventCallback<MusicRecordModel> OnSave { get; set; }
+        // Empty input
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            errorStock = "Stock cannot be empty";
+            isInvalid = true;
+            return;
+        }
 
-	private async Task SaveRecord()
-	{
-		await OnSave.InvokeAsync(musicRecord);
-	}
+        // Non-numeric input
+        if (!int.TryParse(value, out var parsed))
+        {
+            errorStock = "Stock must be a number";
+            isInvalid = true;
+            return;
+        }
 
+        // Negative number
+        if (parsed < 0)
+        {
+            errorStock = "Stock cannot be negative";
+            isInvalid = true;
+            return;
+        }
+
+        // Valid input
+        errorStock = "";
+        isInvalid = false;
+        stockInput = parsed;
+    }
+
+    private async Task SaveRecord()
+    {
+        // Final safety check
+        if (isInvalid)
+            return;
+
+        musicRecord.Stock = stockInput ?? musicRecord.Stock;
+
+        await OnSave.InvokeAsync(musicRecord);
+    }
 }
-
