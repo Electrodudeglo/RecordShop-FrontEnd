@@ -2,22 +2,42 @@
 @using RecordShop_FrontEnd.Models
 @rendermode InteractiveServer
 
-    <div class="container is-max-tablet mt-4">
+<div class="container is-max-tablet mt-4">
+
     <SearchBar SearchText="@searchTerms" SearchTextChanged="OnsearchChanged" />
+
+    @if (isLoading)
+    {
+        <div class="container has-text-centered mt-4">
+            <p>Loading...</p>
+        </div>
+    }
+    else if (!filteredRecords.Any())
+    {
+        <div class="container has-text-centered mt-4">
+            <p>@emptyPageMessage</p>
+        </div>
+    }
+    else
+    {
         <div class="grid mt-4">
             @foreach (var record in filteredRecords)
             {
-            <MusicSummaryCard records="record" />
+                <MusicSummaryCard records="record" />
             }
         </div>
-    </div>
+    }
+
+</div>
 
 @code {
     private List<MusicRecordModel> allRecords { get; set; } = new();
     private List<MusicRecordModel> filteredRecords { get; set; } = new();
 
-    private string _searchTerms = "";
+    private bool isLoading = true;
+    private string emptyPageMessage = "";
 
+    private string _searchTerms = "";
     private string searchTerms
     {
         get => _searchTerms;
@@ -30,14 +50,20 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var http = new HttpClient();
-        var response = await http.GetFromJsonAsync<List<MusicRecordModel>>(
-            "http://localhost:5125/api/v1/records");
-
-        if (response != null)
+        try
         {
-            allRecords = response;
+            var http = new HttpClient();
+            var response = await http.GetFromJsonAsync<List<MusicRecordModel>>(
+                "http://localhost:5125/api/v1/records");
+
+            allRecords = response ?? new List<MusicRecordModel>();
             filteredRecords = allRecords;
+
+            emptyPageMessage = "No records found.";
+        }
+        finally
+        {
+            isLoading = false;
         }
     }
 
@@ -53,11 +79,12 @@
                 .Where(r => r.RecordTitle.Contains(searchTerms, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
+
+        emptyPageMessage = "No records match your search.";
     }
 
     private void OnsearchChanged(string value)
     {
         searchTerms = value;
     }
-
 }
