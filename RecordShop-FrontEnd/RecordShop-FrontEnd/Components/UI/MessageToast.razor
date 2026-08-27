@@ -1,4 +1,7 @@
-﻿<div class="" style="position:fixed; right:20px; z-index:99999">
+﻿@using RecordShop_FrontEnd
+@inject Interfaces.IToastService ToastService
+
+<div class="" style="position:fixed; right:20px; z-index:99999">
     @foreach (var toast in ToastService.Messages)
     {
         <div class="notification @GetCss(toast.Type) mt-4">
@@ -11,21 +14,10 @@
 </div>
 
 @code {
-@using RecordShop_FrontEnd
-@inject Interfaces.IToastService ToastService
 
-    public bool DebugMode = false;
-
-
-    protected override void OnInitialized()
+   protected override void OnInitialized()
     {
         ToastService.OnChange += HandleToastChanged;
-
-        if(DebugMode)
-        {
-            ToastService.Clear();
-            ToastService.DebugToaster();
-        }
     }
 
    

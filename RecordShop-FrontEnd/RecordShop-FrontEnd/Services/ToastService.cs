@@ -10,8 +10,6 @@ namespace RecordShop_FrontEnd.Services
         public event Action? OnChange;
         public IReadOnlyList<ToastMessageClass> Messages => _messages;
 
-        private bool DebuggingToast = true;
-
         public ToastService()
         {
             _messages.Clear();
@@ -36,13 +34,6 @@ namespace RecordShop_FrontEnd.Services
             _ = AutoRemoveAsync(toast);
         }
 
-        public void DebugToaster()
-        {
-            if(DebuggingToast)
-            {            
-                Show("Debug toast", ToastEnum.Info, TimeSpan.FromSeconds(999));
-            }
-        }
         public void Clear()
         {
             _messages.Clear();
