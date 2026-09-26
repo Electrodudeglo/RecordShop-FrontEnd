@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net;
+using System.Net.Http.Json;
 using Microsoft.JSInterop;
 using RecordShop_FrontEnd.Interfaces;
 using RecordShop_FrontEnd.Models;
@@ -20,26 +21,38 @@ namespace RecordShop_FrontEnd.Services
             _toast = toast;
         }
 
-        public async Task<bool> Login(LoginRequestModel creds)
+        public async Task<LoginResultEnum> Login(LoginRequestModel creds)
         {
-            // Call your backend login endpoint
-            var response = await _http.PostAsJsonAsync("api/auth/token", creds);
+            HttpResponseMessage response;
+            try
+            {
+                // Call your backend login endpoint
+                response = await _http.PostAsJsonAsync("api/auth/token", creds);
+            }
+            catch (HttpRequestException)
+            {
+                // Backend unreachable
+                return LoginResultEnum.ServerError;
+            }
+
+            if (response.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.BadRequest)
+                return LoginResultEnum.InvalidCredentials;
 
             if (!response.IsSuccessStatusCode)
-                return false;
+                return LoginResultEnum.ServerError;
 
             // Read JSON: { token: "..." }
             var result = await response.Content.ReadFromJsonAsync<TokenResponse>();
 
             if (result is null || string.IsNullOrWhiteSpace(result.Token))
-                return false;
+                return LoginResultEnum.ServerError;
 
             // Store only the token string
             await _js.InvokeVoidAsync("sessionStorage.setItem", TokenKey, result.Token);
 
             _toast.Show("Logged in", ToastEnum.Success);
 
-            return true;
+            return LoginResultEnum.Success;
         }
 
         public async Task<string?> GetToken()

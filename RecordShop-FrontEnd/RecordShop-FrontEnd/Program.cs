@@ -11,21 +11,19 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddSingleton<IToastService, ToastService>();
 
-// Custom Class Injections
-builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<RecordService>();
-
+var apiBaseUrl = builder.Configuration["ApiBaseUrl"]
+    ?? throw new InvalidOperationException("ApiBaseUrl is missing from appsettings.json");
 
 // Backend API
 builder.Services.AddHttpClient<RecordService>(client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5125/");
+    client.BaseAddress = new Uri(apiBaseUrl);
 });
 
 // Auth API
 builder.Services.AddHttpClient<AuthService>(client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5125/");
+    client.BaseAddress = new Uri(apiBaseUrl);
 });
 
 var app = builder.Build();

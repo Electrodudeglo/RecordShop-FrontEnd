@@ -4,7 +4,13 @@
 @rendermode InteractiveServer
 @inject AuthService Auth
 
-@if(_isAuthenticated)
+@if(!_authChecked)
+{
+	<div class="container has-text-centered mt-4">
+		<progress class="progress is-primary" max="100">Loading</progress>
+	</div>
+}
+else if(_isAuthenticated)
 {
 	<AddMusicRecord />
 }
@@ -19,6 +25,7 @@ else
 @code {
 
 	private bool _isAuthenticated = false;
+	private bool _authChecked = false;
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
@@ -26,6 +33,7 @@ else
 		{
 			var token = await Auth.GetToken();
 			_isAuthenticated = !string.IsNullOrWhiteSpace(token);
+			_authChecked = true;
 			StateHasChanged();
 
 		}

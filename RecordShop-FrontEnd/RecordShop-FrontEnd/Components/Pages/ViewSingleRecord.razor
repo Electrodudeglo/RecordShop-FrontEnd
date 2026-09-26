@@ -4,6 +4,7 @@
 	@using RecordShop_FrontEnd.Services
 	@rendermode InteractiveServer
 	@inject NavigationManager Nav
+	@inject RecordService RecordService
 
 	@if (_isLoading)
 	{
@@ -34,8 +35,7 @@
 	{
 		try
 		{
-			var http = new HttpClient();
-			var response = await http.GetFromJsonAsync<MusicRecordModel>($"http://localhost:5125/api/v1/records/{Id}");
+			var response = await RecordService.GetById(Id);
 			Model = response ?? new MusicRecordModel();
 			_isLoading = false;
 		}
