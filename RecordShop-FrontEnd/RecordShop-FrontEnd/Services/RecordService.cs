@@ -2,6 +2,7 @@
 {
     using RecordShop_FrontEnd.Interfaces;
     using RecordShop_FrontEnd.Models;
+    using System.Net;
     using System.Net.Http.Headers;
     using System.Net.Http.Json;
     using System.Reflection.Metadata.Ecma335;
@@ -66,41 +67,47 @@
             }; 
         }
  
-        public async Task<bool> AddOneRecord(MusicRecordModel record)
-        {
-            if (!await AttachToken()) return false;
-            var response = await _http.PostAsJsonAsync("api/v1/records", record);
+        public Task<bool> AddOneRecord(MusicRecordModel record) =>
+            SendWrite(() => _http.PostAsJsonAsync("api/v1/records", record), "Record Added");
 
-            if(response.IsSuccessStatusCode)
-            {
-                _toast.Show("Record Added", ToastEnum.Success);     
-            }
-            return true;
-        }
+        public Task<bool> UpdateRecord(int id, MusicRecordModel record) =>
+            SendWrite(() => _http.PutAsJsonAsync($"api/v1/records/{id}", record), "Record Changed");
 
-        public async Task<bool> UpdateRecord(int id, MusicRecordModel record)
+        public Task<bool> DeleteRecord(int id) =>
+            SendWrite(() => _http.DeleteAsync($"api/v1/records/{id}"), "Successfully Deleted");
+
+        // Returns true only when the backend confirms the write with a 2xx response
+        private async Task<bool> SendWrite(Func<Task<HttpResponseMessage>> request, string successMessage)
         {
             if (!await AttachToken()) { _toast.Show("Unauthorized", ToastEnum.Error); return false; }
-            var response = await _http.PutAsJsonAsync($"api/v1/records/{id}", record);
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await request();
+            }
+            catch (Exception e) when (e is HttpRequestException or TaskCanceledException)
+            {
+                // Backend unreachable or request timed out
+                _toast.Show("Could not reach the server. Please try again later.", ToastEnum.Error);
+                return false;
+            }
 
             if (response.IsSuccessStatusCode)
             {
-                _toast.Show("Record Changed", ToastEnum.Success);
+                _toast.Show(successMessage, ToastEnum.Success);
+                return true;
             }
-            return true;
-        }
 
-        public async Task<bool> DeleteRecord(int id)
-        {
-            if (!await AttachToken()) { _toast.Show("Unauthorized",ToastEnum.Error); return false; }
-            var response = await _http.DeleteAsync($"api/v1/records/{id}");
-            
-            if(response.IsSuccessStatusCode)
+            var errorMessage = response.StatusCode switch
             {
-                _toast.Show("Successfully Deleted", ToastEnum.Success);
-            }
-            return true;
-        }       
+                HttpStatusCode.Unauthorized => "Session expired, please log in again",
+                HttpStatusCode.NotFound => "Record not found",
+                _ => "Something went wrong. Please try again."
+            };
+            _toast.Show(errorMessage, ToastEnum.Error);
+            return false;
+        }
 }
 
 }
