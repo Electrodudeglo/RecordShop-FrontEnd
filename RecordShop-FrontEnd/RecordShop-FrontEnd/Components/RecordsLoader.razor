@@ -1,6 +1,8 @@
 ﻿@using RecordShop_FrontEnd.Components.UI
 @using RecordShop_FrontEnd.Models
+@using RecordShop_FrontEnd.Services
 @rendermode InteractiveServer
+@inject RecordService RecordService
 
 <div class="container is-max-tablet mt-4">
 
@@ -52,11 +54,7 @@
     {
         try
         {
-            var http = new HttpClient();
-            var response = await http.GetFromJsonAsync<List<MusicRecordModel>>(
-                "http://localhost:5125/api/v1/records");
-
-            allRecords = response ?? new List<MusicRecordModel>();
+            allRecords = await RecordService.GetAll();
             filteredRecords = allRecords;
 
             emptyPageMessage = "No records found.";

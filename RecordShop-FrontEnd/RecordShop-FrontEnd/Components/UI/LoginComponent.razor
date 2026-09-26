@@ -51,7 +51,7 @@
 	public LoginRequestModel userCreds { get; set; } = new();
 
 	[Parameter]
-	public EventCallback<LoginRequestModel> OnSubmit { get; set; }
+	public Func<LoginRequestModel, Task<LoginResultEnum>>? OnSubmit { get; set; }
 
     private bool isLoading { get; set; } = false;
 
@@ -67,7 +67,11 @@
 	private async Task SubmitCreds()
 	{
         isLoading = true;
-        
+
+        errorCreds = String.Empty;
+        errorEmail = String.Empty;
+        errorPassword = String.Empty;
+
         if(string.IsNullOrWhiteSpace(userCreds.UserName))
         {
             errorEmail = "Email is empty";
@@ -93,20 +97,21 @@
 
         await Task.Delay(800);
 
-        try
-        {
-            await OnSubmit.InvokeAsync(userCreds);
-        }
-        catch(Exception e)
-        {
-            errorCreds = "Invalid Login Details";
+        var result = OnSubmit is null ? LoginResultEnum.ServerError : await OnSubmit(userCreds);
 
+        errorCreds = result switch
+        {
+            LoginResultEnum.InvalidCredentials => "Invalid Login Details",
+            LoginResultEnum.ServerError => "Could not reach the server. Please try again later.",
+            _ => String.Empty
+        };
+
+        if (result != LoginResultEnum.Success)
+        {
             disableInput = false;
         }
-        finally
-        {
-            isLoading = false;
-        }
+
+        isLoading = false;
     }
 
 }

@@ -2,6 +2,7 @@
 @using RecordShop_FrontEnd.Services
 @inject NavigationManager Nav
 @inject AuthService AuthService
+@inject RecordService RecordService
 
 <div class="box">
     <div class="has-text-centered">
@@ -53,8 +54,7 @@
 }
 
 @code {
-    [Inject] public RecordService RecordService { get; set; }
-
+    
     [Parameter]
     public MusicRecordModel records { get; set; } = new();
 

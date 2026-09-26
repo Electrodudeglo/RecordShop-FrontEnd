@@ -37,7 +37,14 @@
             {
                 return result;
             }
-            return new();         
+            return new();
+        }
+
+        public async Task<MusicRecordModel?> GetById(int id)
+        {
+            var response = await _http.GetAsync($"api/v1/records/{id}");
+            if (!response.IsSuccessStatusCode) return null;
+            return await response.Content.ReadFromJsonAsync<MusicRecordModel>();
         }
 
         public async Task<DeezerAlbumResult> CheckDeezer(DeezerCheckRequest request)

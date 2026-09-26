@@ -5,10 +5,16 @@
 @using RecordShop_FrontEnd.Services
 @inject NavigationManager Nav
 @inject AuthService service
+@inject RecordService recordService
 
-
-@if(_isAuthenticated)
-{		
+@if(!_authChecked)
+{
+	<div class="container has-text-centered mt-4">
+		<progress class="progress is-primary" max="100">Loading</progress>
+	</div>
+}
+else if(_isAuthenticated)
+{
 	<div class="container is-max-tablet mt-4">
 		<EditMusicDetails musicRecord="Model" OnSave="HandleSave" />
 	</div>
@@ -27,17 +33,15 @@ else
 	[Parameter]
 	public int Id { get; set; }
 
-	[Inject] public RecordService recordService { get; set; }
-
 	private bool _isAuthenticated = false;
-	
+	private bool _authChecked = false;
+
 
 	protected override async Task OnInitializedAsync()
 	{
 		try
 		{
-			var http = new HttpClient();
-			var response = await http.GetFromJsonAsync<MusicRecordModel>($"http://localhost:5125/api/v1/records/{Id}");
+			var response = await recordService.GetById(Id);
 
 			Model = response ?? new();
 
@@ -54,6 +58,7 @@ else
 		{
 			var token = await service.GetToken();
 			_isAuthenticated = !string.IsNullOrWhiteSpace(token);
+			_authChecked = true;
 			StateHasChanged();
 		}
 	}

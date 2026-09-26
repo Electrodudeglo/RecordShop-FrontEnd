@@ -4,7 +4,7 @@
 @using RecordShop_FrontEnd.Models
 @rendermode InteractiveServer
 @inject NavigationManager Nav
-
+@inject AuthService Auth
 
 <LoginComponent OnSubmit="HandleLogin"/>
 
@@ -13,21 +13,15 @@
 
 @code {
 
-	[Inject] private AuthService? Auth { get; set; } = null;
-
-	
-	public async Task HandleLogin(LoginRequestModel creds)
+	public async Task<LoginResultEnum> HandleLogin(LoginRequestModel creds)
 	{
+		var result = await Auth.Login(creds);
 
-		bool result = await Auth.Login(creds);
-
-		if(result)
+		if(result == LoginResultEnum.Success)
 		{
 			Nav.NavigateTo("/", forceLoad: true);
 		}
-		else
-		{
-			throw new Exception("Invalid credentials");
-		}
+
+		return result;
 	}
 }
